@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+
+body{
+  padding: 0px;
+  margin: 0px;
+}
+*{
+  box-sizing: border-box;
+}
+#root{
+  background-color: rgb(43, 43, 43);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+
+}
+
+textarea::-webkit-scrollbar{
+  width: 0px;
+}
+.scroll::-webkit-scrollbar{
+  background-color: transparent;
+  width: 10px;
+}
+.scroll::-webkit-scrollbar-thumb{
+  background-color: grey;
+  border-radius: 10px;
+}

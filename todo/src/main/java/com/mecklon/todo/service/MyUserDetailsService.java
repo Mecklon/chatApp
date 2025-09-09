@@ -1,0 +1,29 @@
+package com.mecklon.todo.service;
+
+import com.mecklon.todo.model.User;
+import com.mecklon.todo.model.UserPrincipal;
+import com.mecklon.todo.repo.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyUserDetailsService implements UserDetailsService {
+
+    @Autowired
+    private UserRepo repo;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = repo.findByUsername(username);
+        System.out.println(user);
+        if(user==null){
+            System.out.println("User not found");
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return new UserPrincipal(user);
+    }
+}
