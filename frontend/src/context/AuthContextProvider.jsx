@@ -5,7 +5,6 @@ export const AuthContext = createContext();
 const AuthContextProvider = ({children})=>{
     const [username, setUsername] = useState(null);
 
-    console.log(username)
     useEffect(()=>{
         const autoLogin = async ()=>{
             const res = await api.get("http://localhost:9090/autoLogin")

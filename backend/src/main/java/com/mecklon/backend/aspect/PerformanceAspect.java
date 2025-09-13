@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PerformanceAspect {
 
-    @Around("execution(* com.mecklon.todo.service.*.*(..))")
+    @Around("execution(* com.mecklon.backend.service.*.*(..))")
     public Object monitor(ProceedingJoinPoint jp) throws Throwable {
         long before = System.currentTimeMillis();
         Object obj = jp.proceed();

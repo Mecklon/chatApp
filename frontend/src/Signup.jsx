@@ -88,9 +88,9 @@ function Signup() {
       </div>
       {error && <div className="text-center text-lg text-red-500">{error}</div>}
 
-      <Link to="/login" className="text-blue-600 text-center block mt-3">
+      {/* <Link to="/login" className="text-blue-600 text-center block mt-3">
         Login
-      </Link>
+      </Link> */}
     </form>
   );
 }
