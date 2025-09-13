@@ -1,6 +1,5 @@
 import Signup from "./Signup";
 import Login from "./Login";
-import Todo from "./Todo";
 import "./index.css";
 import { useAuthContext } from "./hooks/useAuthContext";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
