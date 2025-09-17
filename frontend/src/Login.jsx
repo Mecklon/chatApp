@@ -71,9 +71,9 @@ let Login = () => {
           />
         )}
       </div>
-      {/* <Link to="/register" className="text-blue-600 text-center block mt-3">
+      <Link to="/register" className="text-blue-600 text-center block mt-3">
         Register
-      </Link> */}
+      </Link>
     </form>
   );
 };
