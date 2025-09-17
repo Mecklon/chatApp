@@ -7,7 +7,7 @@ const usePostFetch = (initialValue=null)=>{
 
     const controllerRef = useRef()
 
-    const fetch = async(query, body, skipAuth = false)=>{
+    const fetch = async(query, body, skipAuth = false, headers = {})=>{
         if(controllerRef.current) controllerRef.current.abort();
         controllerRef.current = new AbortController()
 
@@ -15,7 +15,7 @@ const usePostFetch = (initialValue=null)=>{
         setError(null)
 
         try{
-            const res = await api.post(query,body, {skipAuth: skipAuth, signal: controllerRef.current.signal})
+            const res = await api.post(query,body, {skipAuth: skipAuth, signal: controllerRef.current.signal, headers})
             setState(res.data)
             return res.data
         }catch(error){

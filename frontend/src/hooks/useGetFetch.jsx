@@ -8,7 +8,7 @@ const useGetFetch = (initialValue = null)=>{
 
     const controllerRef = useRef()
 
-    const fetch =  async (query, skipAuth = false)=>{
+    const fetch =  async (query, skipAuth = false, headers={})=>{
         
         
         if(controllerRef.current) controllerRef.current.abort();
@@ -17,8 +17,9 @@ const useGetFetch = (initialValue = null)=>{
         setError(null)
         setLoading(true)
         try{
-            const res = await api.get(query, {skipAuth: skipAuth, signal: controllerRef.current.signal})
+            const res = await api.get(query, {skipAuth: skipAuth, signal: controllerRef.current.signal, headers})
             setState(res.data)
+            return res.data;
         }catch(error){
             if(error.response){
                 console.log("server error")
