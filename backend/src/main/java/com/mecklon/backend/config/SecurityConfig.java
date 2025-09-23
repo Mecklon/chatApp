@@ -46,7 +46,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults());
         http.csrf(customizer-> customizer.disable());  // disables the use of csrf tokens used to protect sessions from cross side scripting
-        http.authorizeHttpRequests(request-> request.requestMatchers("/signup","/login").permitAll().anyRequest().authenticated());  // specifies that every request needs to be authenticated since we will be going for stateless rest
+        http.authorizeHttpRequests(request-> request.requestMatchers("/signup","/login","/ws/**").permitAll().anyRequest().authenticated());  // specifies that every request needs to be authenticated since we will be going for stateless rest
         //http.formLogin(Customizer.withDefaults());  // provides a default form to login with password username
         http.httpBasic(Customizer.withDefaults());  // specifies the form security basics to be the default ones
         http.sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));  // makes the session stateless

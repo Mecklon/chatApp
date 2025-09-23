@@ -70,7 +70,9 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();              // replaces getBody()
     }
-
+    public boolean validateToken(String token) {
+        return extractUserName(token) != null && !isTokenExpired(token);
+    }
 
     public boolean validateToken(String token, UserDetails userDetails) {
         final String userName = extractUserName(token);
