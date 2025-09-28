@@ -19,12 +19,11 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
     // here while mapping to projection only primitives map something like u.profile wont map since profle is embedded object and not a primitive type
 
-    // also while refering to join made by embedded keys we have to refer to key values itself that is r.key.receiverId works but r.receiver.id will not be recognized
     @Query("""
             select new com.mecklon.backend.DTO.Person(u.id, u.isOnline, u.username, u.profileImg.filePath, u.profileImg.fileName) from User u 
-            where u.username like  concat(:prefix, '%') 
+            where lower(u.username) like  concat(lower(:prefix), '%') 
             and
-            u.username > :cursor
+            lower(u.username) > lower(:cursor)
             and
             u.id != :currentUser
             and

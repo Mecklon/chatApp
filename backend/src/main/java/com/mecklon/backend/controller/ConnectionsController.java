@@ -21,11 +21,9 @@ public class ConnectionsController {
     @Autowired
     UserService us;
 
-    @GetMapping("/searchPeople/{name}")
-    public List<Person> searchPeople(@PathVariable("name") String name, @PathVariable("cursor")String cursor, @AuthenticationPrincipal UserPrincipal principal){
-        System.out.println(principal.getId());
-        return new ArrayList<Person>();
-        //return us.getUsernameMatches(name, principal.getId(), cursor );
+    @GetMapping("/searchPeople/{name}/{cursor}")
+    public List<Person> searchPeople(@PathVariable("name") String name,@PathVariable("cursor") String cursor, @AuthenticationPrincipal UserPrincipal principal){
+        return us.getUsernameMatches(name, principal.getId(), cursor );
     }
 
 }
