@@ -11,7 +11,8 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserGroup implements Serializable {
+
+public class UserGroupId implements Serializable {
     private Long groupId;
     private Long userId;
 }

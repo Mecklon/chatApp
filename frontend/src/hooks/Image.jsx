@@ -1,30 +1,40 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
 
-const Image = ({ path, className = "" }) => {
+const Image = ({ path= null, className = "",fallback = null}) => {
   const [src, setSrc] = useState(null);
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
+    if(path===null)return
+    
+    let objectUrl;
+
     const getData = async () => {
       try {
+        setLoading(true)
         const res = await api.get(`http://localhost:9090/api/files/${path}`, {
           responseType: "blob",
         });
-        const objectUrl = URL.createObjectURL(res.data);
+        objectUrl = URL.createObjectURL(res.data);
         setSrc(objectUrl);
       } catch (err) {
         console.log("image fetch err: ", err);
+      }finally{
+        setLoading(false)
       }
     };
 
     getData();
     return () => {
-      URL.revokeObjectURL(URL.createObjectURL(res.data));
+      if(objectUrl){
+        URL.revokeObjectURL(objectUrl);
+      }
     };
   }, [path]);
 
-  if (!src) {
+  if (loading) {
     return <div>Loading.....</div>;
   }
-  return <img src={src} className={className} alt="" />;
+  return <img src={src|| fallback} className={className} alt="" />;
 };
 export default Image;

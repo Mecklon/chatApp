@@ -7,12 +7,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
+@Table(
+        name = "users",
+        indexes = {
+                @Index(name="username_search_index",columnList = "username")
+        }
+)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +35,7 @@ public class User {
     private String password;
 
     @Embedded
-    private ProfileImg profileImg;
+    private ProfileImg profileImg = new ProfileImg();
 
     private boolean isOnline = false;
 
@@ -38,4 +45,23 @@ public class User {
     private String caption;
 
     private String preference;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserGroup> groups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Request> receivedRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Request> sentRequests = new ArrayList<>();
+
+    public ProfileImg getProfileImg() {
+        if (profileImg == null) {
+            profileImg = new ProfileImg();
+        }
+        return profileImg;
+    }
+
+
+
 }

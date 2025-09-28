@@ -5,6 +5,6 @@ import AuthContextProvider from "./context/AuthContextProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
     <AuthContextProvider>
-      <App />
+      <App/>
     </AuthContextProvider>
 );

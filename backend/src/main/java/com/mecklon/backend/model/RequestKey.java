@@ -1,4 +1,17 @@
 package com.mecklon.backend.model;
 
-public class RequestKey {
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+
+@Embeddable
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class RequestKey implements Serializable {
+    private Long senderId;
+    private Long receiverId;
 }

@@ -4,8 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import rolling from "./assets/rolling.gif";
 import { useAuthContext } from "./hooks/useAuthContext";
 import usePostFetch from "./hooks/usePostFetch";
+import { PiGraphLight } from "react-icons/pi";
+
 function Signup() {
-  const { setUsername } = useAuthContext();
+  const { setUsername, setEmail } = useAuthContext();
   const { error, loading, fetch } = usePostFetch();
 
   const navigate = useNavigate();
@@ -25,7 +27,8 @@ function Signup() {
     if (data) {
       localStorage.setItem("JwtToken", data.token);
       setUsername(data.username);
-      navigate("/")
+      setEmail(data.email);
+      navigate("/");
     }
   };
 
@@ -37,37 +40,39 @@ function Signup() {
     <form
       onSubmit={handleSubmit}
       action=""
-      className="w-[90%] max-w-[500px] p-10 bg-stone-900 border border-white mt-10 rounded-2xl shadow-lg"
+      className="w-[90%] max-w-[500px] p-10 bg-background border border-borderColor mt-10 rounded-2xl shadow-2xl"
     >
-      <h1 className="text-4xl text-center font-bold mb-7 text-white">
-        Todo Registeration
+      <h1 className="text-2xl mb-5 flex gap-1 items-center text-primary">
+        <PiGraphLight className="text-5xl text-primary" />
+        Uni Talk
       </h1>
+      <h1 className="text-4xl  font-bold mb-3 text-primary">Signup To Talk</h1>
       <label htmlFor="name">
-        <div className="text-2xl text-white">Username: </div>
+        <div className="text-2xl text-primary">Username: </div>
         <input
           ref={name}
           required
-          className="mt-2 text-gray-600 text-xl p-2 bg-stone-950 w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
+          className="mt-2 text-gray-600 text-xl p-2 bg-inputBackground border-1 w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
           type="text"
           id="name"
         />
       </label>
       <label htmlFor="email">
-        <div className="text-2xl mt-2 text-white">Email: </div>
+        <div className="text-2xl mt-2 text-primary">Email: </div>
         <input
           ref={email}
           required
-          className="mt-2 text-gray-600 text-xl p-2 bg-stone-950 w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
+          className="mt-2 text-gray-600 border-1 text-xl p-2 bg-inputBackground w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
           type="text"
           id="email"
         />
       </label>
       <label htmlFor="password">
-        <div className="text-2xl mt-2 text-white">Password: </div>
+        <div className=" text-2xl mt-2 text-primary">Password: </div>
         <input
           ref={password}
           required
-          className="mt-2 text-gray-600 text-xl p-2 bg-stone-950 w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
+          className="mt-2 text-gray-600 text-xl p-2 bg-inputBackground border-1 w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
           type="password"
           id="password"
         />
@@ -76,7 +81,7 @@ function Signup() {
         <input
           disabled={loading}
           type="submit"
-          className="w-[100%] rounded-xl bg-blue-800 text-white text-2xl p-2  hover:bg-blue-900 duration-300 cursor-pointer"
+          className="w-[100%] rounded-xl bg-secondary text-white text-2xl p-2  hover:bg-secondaryHover duration-300 cursor-pointer"
         />
         {loading && (
           <img
@@ -88,7 +93,7 @@ function Signup() {
       </div>
       {error && <div className="text-center text-lg text-red-500">{error}</div>}
 
-      <Link to="/login" className="text-blue-600 text-center block mt-3">
+      <Link to="/login" className="text-secondary text-center block mt-3">
         Login
       </Link>
     </form>

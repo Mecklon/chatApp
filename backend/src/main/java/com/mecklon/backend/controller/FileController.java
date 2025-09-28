@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 @RequestMapping("/api/files")
 public class FileController {
 
-    private final String uploadDir = "C:/Users/Mecklon Fernandes/Desktop/code/setup/backend/uploads";
+    private final String uploadDir = "C:/Users/Mecklon Fernandes/Desktop/code/chatApp/backend/uploads";
 
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) throws MalformedURLException {

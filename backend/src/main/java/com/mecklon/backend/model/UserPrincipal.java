@@ -20,6 +20,10 @@ public class UserPrincipal implements UserDetails {
         return List.of(new SimpleGrantedAuthority("USER"));
     }
 
+    public Long getId() {
+        return user.getId();
+    }
+
     @Override
     public String getPassword() {
         return user.getPassword();

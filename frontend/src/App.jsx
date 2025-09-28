@@ -1,5 +1,6 @@
 import Signup from "./Signup";
 import Login from "./Login";
+import Home from "./components/Home";
 import "./index.css";
 import { useAuthContext } from "./hooks/useAuthContext";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -17,7 +18,7 @@ function App() {
         </Routes>
       ) : (
         <Routes>
-          <Route path="*" element={<div>App</div>}></Route>
+          <Route path="*" element={<Home/>}></Route>
         </Routes>
       )}
     </BrowserRouter>
