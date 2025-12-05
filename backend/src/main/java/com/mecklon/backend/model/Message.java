@@ -16,7 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 @Table(
         indexes = {
-                @Index(name = "idx_messages_group_postedon", columnList = "group_id, postedOn DESC")
+                @Index(name = "idx_messages_group_postedon", columnList = "group_id, postedOn DESC"),
+                @Index(name = "idx_messages_connection1_postedon", columnList = "connection_user1_id, postedOn DESC"),
+                @Index(name = "idx_messages_connection2_postedon", columnList =  "connection_user2_id, postedOn DESC")
         }
 )
 public class Message {
@@ -29,7 +31,7 @@ public class Message {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime postedOn;
 
-    @OneToMany(mappedBy = "message")
+    @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Multimedia> media = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

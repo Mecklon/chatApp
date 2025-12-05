@@ -13,7 +13,7 @@ let Login = () => {
 
   const navigate = useNavigate();
 
-  const { setUsername,setEmail, setProfile, setCaption } = useAuthContext();
+  const { setUsername,setEmail, setProfile, setCaption, setUnseenNotifications,setUnseenRequests } = useAuthContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,6 +28,8 @@ let Login = () => {
     if (data) {
       setUsername(data.username);
       setEmail(data.email);
+      setUnseenNotifications(parseInt(data.unseenNotifications))
+      setUnseenRequests(parseInt(data.unseenRequests))
       if (data.profile) {
         setProfile(data.profile);
       }
@@ -55,6 +57,7 @@ let Login = () => {
       <label htmlFor="email">
         <div className="text-2xl mt-2 text-primary">Username: </div>
         <input
+          autoFocus
           ref={usernameRef}
           required
           className="mt-2 text-gray-600 text-xl p-2 bg-inputBackground w-[100%] rounded border-1 outline-none focus:ring-blue-400 focus:ring-2 duration-150"

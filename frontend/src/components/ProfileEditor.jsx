@@ -5,6 +5,7 @@ import Image from "../hooks/Image";
 import { TiTick } from "react-icons/ti";
 import { ImCross } from "react-icons/im";
 import usePostFetch from "../hooks/usePostFetch";
+import rolling from '../assets/rolling.gif'
 
 const ProfileEditor = React.forwardRef((props, ref) => {
   const {
@@ -22,7 +23,7 @@ const ProfileEditor = React.forwardRef((props, ref) => {
   const captionRef = useRef();
   const imageRef = useRef();
 
-  const { fetch } = usePostFetch();
+  const { fetch , loading} = usePostFetch();
 
   const handleChange = (e) => {
     if (e.target.files[0]) {
@@ -96,6 +97,7 @@ const ProfileEditor = React.forwardRef((props, ref) => {
           defaultValue={caption}
         ></textarea>
         <div className="flex gap-1 items-center">
+           
           <TiTick
             onClick={handleSubmit}
             className="text-black text-5xl hover:scale-110 duration-300 cursor-pointer"

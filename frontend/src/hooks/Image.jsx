@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
 
-const Image = ({ path= null, className = "",fallback = null}) => {
+const Image = ({ path= null, className = "",fallback = null, fullToggle = false}) => {
   const [src, setSrc] = useState(null);
   const [loading, setLoading] = useState(false)
   useEffect(() => {

@@ -9,7 +9,7 @@ export function useWebSocket(token) {
       connectHeaders: {
         Authorization: `Bearer ${token}`, // JWT
       },
-      debug: (str) => console.log(str),
+      /* debug: (str) => console.log(str), */   // show logs in console
       reconnectDelay: 5000, // auto-reconnect after 5s
     });
   }, [token]);

@@ -24,6 +24,7 @@ body {
 }
 * {
   box-sizing: border-box;
+  --customToggleHeight: 30px;
 }
 #root {
   background-color: var(--color-background);
@@ -41,6 +42,7 @@ textarea::-webkit-scrollbar {
 .scroll::-webkit-scrollbar {
   background-color: transparent;
   width: 10px;
+  
 }
 .scroll::-webkit-scrollbar-thumb {
   background-color: grey;
@@ -51,9 +53,57 @@ textarea::-webkit-scrollbar {
   width: 10px;
 }
 .customScroll::-webkit-scrollbar-thumb {
-  background-color: rgba(128, 128, 128, 0.363);
+  background-color: rgba(128, 128, 128, 0.663);
   border-radius: 100px;
 }
 .customScroll::-webkit-scrollbar-thumb:hover {
   background-color: grey;
+}
+.thinTrack::-webkit-scrollbar{
+  width: 5px;
+  height: 5px;
+}
+
+
+
+
+.customToggle{
+    position: relative;
+    height: 10px;
+    width: 60px;
+}
+.customToggle::before{
+    content: "";
+    position: absolute;
+    transform: translateY(-25% );
+    height: var(--customToggleHeight);
+    width: calc( var(--customToggleHeight) * 2 );
+    border-radius: var(--customToggleHeight);
+    background-color: grey;
+    transition:all 0.4s;
+    
+  }
+  .customToggle:checked::before{
+    background-color: rgb(76, 179, 240);
+  }
+  .customToggle::after{
+    content: "";
+    transform: translateY(-27% );
+    position: absolute;
+    height: calc( var(--customToggleHeight) * 0.85);
+    width: calc( var(--customToggleHeight) * 0.85);
+    left: calc( var(--customToggleHeight) * 0.0725);
+    top:calc( var(--customToggleHeight) * 0.0725);
+    border-radius: var(--customToggleHeight);
+    background-color: white;
+    transition:all 0.2s ease-in-out;
+    
+  }
+  .customToggle:checked::after{
+    transform: translateX(calc(var(--customToggleHeight) * 0.975)) translateY(-27% );
+}
+
+
+.checkBlue:has(input:checked){
+  background-color: rgb(167, 211, 252);
 }

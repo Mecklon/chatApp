@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import ProfileEditor from "./ProfileEditor";
+import api from "../api/api";
 const DropDown = React.forwardRef((prop, ref) => {
   const { setUsername, setEmail, setProfile ,setCaption} = useAuthContext();
 
-  const handleLogout = () => {
+  const handleLogout = async() => {
     localStorage.removeItem("JwtToken");
     setUsername(null);
     setEmail(null);
     setProfile(null);
     setCaption(null);
-
+    await api.get('/logout')
   };
 
   const focusRef = useRef();
@@ -40,7 +41,7 @@ const DropDown = React.forwardRef((prop, ref) => {
       {
         openProfileDetails &&
         
-        <ProfileEditor ref={focusRef}/>
+        <ProfileEditor  ref={focusRef}/>
       }
     </div>
   );

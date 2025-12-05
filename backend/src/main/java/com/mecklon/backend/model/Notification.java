@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.beans.ConstructorProperties;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,11 +25,11 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
-
     @ManyToOne
     private User sender ;
+
+    @Column(nullable = false)
+    private int typeId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
@@ -37,11 +38,10 @@ public class Notification {
     @ManyToOne
     private Group group;
 
+    @Column(nullable = false)
     private NotificationType type;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime postedOn;
-
-    private boolean seen = false;
 
 }

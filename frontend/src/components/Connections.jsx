@@ -1,11 +1,26 @@
 import React, { useState } from "react";
 import { FaChevronUp } from "react-icons/fa";
+import Friend from "./Friend";
+import { useSelector } from "react-redux";
+import { FaPlus } from "react-icons/fa6";
+import CreateGroupForm from "./CreateGroupForm";
+import Group from "./Group";
 
 function Connections() {
   const [openConversations, setOpenConversations] = useState(true);
   const [openGroups, setOpenGroups] = useState(true);
+
+  const { connections, groups } = useSelector((store) => store.connection);
+
+  const [isGroupCreatorOpen, setIsGroupCreatorOpen] = useState(false)
+
+  const openCreateGroup = (e)=>{
+    e.stopPropagation()
+    setIsGroupCreatorOpen(true)
+  }
+
   return (
-    <div className=" flex-1 overflow-auto customScroll">
+    <div className=" flex-1 overflow-auto  customScroll w-full">
       <div
         className="text-2xl font-bold p-2 flex items-center justify-between"
         onClick={() => setOpenConversations((prev) => !prev)}
@@ -14,24 +29,14 @@ function Connections() {
         <FaChevronUp
           className={`${
             openConversations && "rotate-180"
-          } text-xl duration-300`}
+          } text-xl duration-300 hover:scale-140`}
         />
       </div>
       {openConversations && (
         <>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
+          {connections.map((connection) => {
+            return <Friend key={connection.id} connection={connection} />;
+          })}
         </>
       )}
       <div
@@ -39,21 +44,21 @@ function Connections() {
         onClick={() => setOpenGroups((prev) => !prev)}
       >
         <div>Groups</div>
-        <FaChevronUp
-          className={`${openGroups && "rotate-180"} text-xl duration-300`}
-        />
+        <div className="flex gap-1">
+          <FaPlus
+            onClick={openCreateGroup}
+            className={`-xl duration-300 hover:scale-140`}
+          />
+
+          <FaChevronUp
+            className={`${
+              openGroups && "rotate-180"
+            } text-xl duration-300 hover:scale-140`}
+          />
+        </div>
       </div>
-      {openGroups && (
-        <>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-          <div className="bg-pink-500 h-12 rounded-2xl mb-2"></div>
-        </>
-      )}
+      {openGroups && groups.map(group=> <Group key={group.id} group={group}/>)}
+      {isGroupCreatorOpen && <CreateGroupForm setIsOpen={setIsGroupCreatorOpen}/>}
     </div>
   );
 }

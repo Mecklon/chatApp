@@ -4,29 +4,48 @@ import Connections from "./Connections";
 import People from "./People";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useGetFetch from "../hooks/useGetFetch";
+import { useSelector } from "react-redux";
 
 function Contacts() {
   const [searchList, setSearchList] = useState([]);
-  const [loading, setLoading] = useState(false)
+  const [loadingSearchList, setLoadingSearchList] = useState(false);
+  const [searching, setSearching] = useState(false);
+
+  const inputRef = useRef()
 
   const { fetch } = useGetFetch();
+  
+  const  {connectionSet,connections} = useSelector(store=>store.connection)
+  const friendSet = new Set(...connectionSet)
 
   const timeoutRef = useRef(null);
 
+
+  
+  //add inifinite scrolling functionality
   const handleSearch = useCallback(
     async (e) => {
-      if (e.target.value === null || e.target.value === "") {
+
+      if (e.target.value === null || e.target.value.trim() === "") {
         setSearchList([]);
+        setSearching(false);
         return;
       }
-      setLoading(true)
+      setSearching(true);
+      setLoadingSearchList(true);
       if (timeoutRef.current !== null) clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(async () => {
-        const cursor = searchList? searchList[searchList.length-1].username: "";
-        const data = await fetch("/searchPeople/" + e.target.value + "/" + cursor);
-        console.log(data)
-        setLoading(false)
-        if(!data)return
+        /* const cursor =
+          searchList.length !== 0
+            ? searchList[searchList.length - 1].username
+            : "a"; */
+        const cursor = 'a'
+        let data = await fetch(
+          "/searchPeople/" + e.target.value.trim() + "/" + cursor
+        );
+        data = data.filter(person=> !friendSet.has(person.username))
+        setLoadingSearchList(false);
+        if (!data) return;
         setSearchList(data);
       }, 500);
     },
@@ -45,18 +64,17 @@ function Contacts() {
         <HiMagnifyingGlass className="text-4xl px-1" />
         <input
           type="text"
+          ref={inputRef}
           className="grow-1 outline-0"
           onKeyUp={handleSearch}
           placeholder="Find someone new"
         />
       </div>
-      {searchList.length !== 0 && (
-        !loading && <People searchList={searchList} setSearchList={setSearchList} />
+      {!loadingSearchList && searchList.length!==0 && (
+        <People searchList={searchList} setSearchList={setSearchList} ref={inputRef}/>
       )}
-      {(
-        loading && <div>loading..</div>
-      )}
-      {searchList.length === 0 && <Connections />}
+      {loadingSearchList && <div>loading..</div>}
+      {!searching && <Connections />}
     </div>
   );
 }

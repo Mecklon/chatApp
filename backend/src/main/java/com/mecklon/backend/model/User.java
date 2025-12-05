@@ -15,10 +15,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(
-        name = "users",
-        indexes = {
-                @Index(name="username_search_index",columnList = "username")
-        }
+        name = "users"
+        //,
+        // this part does not work because it indexes by username that are case sensitive and
+        // the queries fetch by a non case sensitive logic
+        //CREATE INDEX idx_lower_username ON users (lower(username)); --> command to create a index directly in
+        //postgress since complex indexes are not supported by jpa
+//        indexes = {
+//                @Index(name="username_search_index",columnList = "username")
+//        }
 )
 public class User {
     @Id
@@ -62,6 +67,8 @@ public class User {
         return profileImg;
     }
 
+    private int unseenNotifications = 0;
 
+    private int unseenRequest = 0;
 
 }

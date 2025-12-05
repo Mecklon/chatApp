@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -13,7 +12,7 @@ import java.util.Map;
 
 @Slf4j
 @Controller
-public class ChatController {
+public class ChatControllerSocket {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
@@ -52,4 +51,5 @@ public class ChatController {
     public void sendMessageSeen(@Payload Map<String, String> payload, Principal principal){
         messagingTemplate.convertAndSendToUser(payload.get("sender"),"queue/seenMessage",principal.getName());
     }
+
 }

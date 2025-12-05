@@ -1,4 +1,19 @@
 package com.mecklon.backend.DTO;
 
+import com.mecklon.backend.model.Multimedia;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageDTO {
+    private String content;
+    private LocalDateTime time;
+    private List<MultimediaDTO> media;
+    private String username;
 }

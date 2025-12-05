@@ -7,7 +7,7 @@ import usePostFetch from "./hooks/usePostFetch";
 import { PiGraphLight } from "react-icons/pi";
 
 function Signup() {
-  const { setUsername, setEmail } = useAuthContext();
+  const { setUsername, setEmail, setUnseenNotifications, setUnseenRequests } = useAuthContext();
   const { error, loading, fetch } = usePostFetch();
 
   const navigate = useNavigate();
@@ -28,6 +28,8 @@ function Signup() {
       localStorage.setItem("JwtToken", data.token);
       setUsername(data.username);
       setEmail(data.email);
+      setUnseenNotifications(parseInt(data.unseenNotifications))
+      setUnseenRequests(parseInt(data.unseenRequests))
       navigate("/");
     }
   };
@@ -50,6 +52,7 @@ function Signup() {
       <label htmlFor="name">
         <div className="text-2xl text-primary">Username: </div>
         <input
+          autoFocus
           ref={name}
           required
           className="mt-2 text-gray-600 text-xl p-2 bg-inputBackground border-1 w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
