@@ -264,7 +264,7 @@ public class UserService {
 
         formData.getMembers().forEach(member->{
             User u = repo.findByUsername(member);
-            users.add(new UserGroup( new UserGroupId(u.getId(), savedGroup.getId()),u, savedGroup, 0, adminsSet.contains(member)));
+            users.add(new UserGroup( new UserGroupId(u.getId(), savedGroup.getId()),u, savedGroup, 0,0, adminsSet.contains(member)));
         });
 
         savedGroup.setMembers(users);

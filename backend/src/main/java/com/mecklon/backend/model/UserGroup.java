@@ -32,6 +32,8 @@ public class UserGroup {
 
     private int pending = 0;
 
+    private int reached = 0;
+
     private boolean isAdmin = false;
 
 }

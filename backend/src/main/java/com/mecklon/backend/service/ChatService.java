@@ -1,12 +1,11 @@
 package com.mecklon.backend.service;
 
 import com.mecklon.backend.DTO.ChatContextDTO;
+import com.mecklon.backend.DTO.GroupMessageDTO;
 import com.mecklon.backend.DTO.MessageDTO;
 import com.mecklon.backend.DTO.MultimediaDTO;
 import com.mecklon.backend.model.*;
-import com.mecklon.backend.repo.ConnectionsRepo;
-import com.mecklon.backend.repo.MessageRepo;
-import com.mecklon.backend.repo.UserRepo;
+import com.mecklon.backend.repo.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +15,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.sound.midi.Receiver;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -33,6 +31,14 @@ public class ChatService {
 
     @Autowired
     private ConnectionsRepo Crepo;
+
+    @Autowired
+    private GroupRepo Grepo;
+
+    @Autowired
+    private UserGroupRepo UGrepo;
+
+
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
@@ -53,10 +59,10 @@ public class ChatService {
                                 new MultimediaDTO(
                                         media.getId(),
                                         media.getFileName(),
-                                        media.getFileType(),
                                         media.getFileType()))
-                        .toList() ,
-                m.getUser().getUsername()
+                        .toList(),
+                m.getUser().getUsername(),
+                null
         )).toList();
 
         int reached = c.getUser1().getUsername().equals(user1) ? c.getReached2() : c.getReached1();
@@ -111,10 +117,10 @@ public class ChatService {
                                 new MultimediaDTO(
                                         media.getId(),
                                         media.getFileName(),
-                                        media.getFileType(),
                                         media.getFileType()))
                                         .toList() ,
-                mess.getUser().getUsername()
+                mess.getUser().getUsername(),
+                null
         );
 
         if(receiverUser.isOnline()){
@@ -141,7 +147,7 @@ public class ChatService {
         }else{
             c.setPending1(c.getPending1()+1);
         }
-        Crepo.save(c);
+        //Crepo.save(c);
         Crepo.save(c);
         messagingTemplate.convertAndSendToUser(sender, "queue/reached",receiver);
     }
@@ -158,11 +164,218 @@ public class ChatService {
         Crepo.save(c);
     }
 
-
     @Transactional
     public void setReachedZero(Long id) {
-
         Crepo.setReachedZero(id);
         Crepo.setReachedZero2(id);
+
+
+        List<UserGroup> groups = UGrepo.findAllByUserId(id);
+
+        for(UserGroup user : groups){
+            boolean flag = false;
+            if(user.getGroup().getMaxReached() > user.getReached()){
+                user.setReached(0);
+            }else{
+                user.setReached(0);
+                int maxReached = UGrepo.getMaxReached(user.getGroup().getId(), id);
+                user.getGroup().setMaxReached(maxReached);
+
+                messagingTemplate.convertAndSend("/topic/group/"+user.getGroup().getId(),
+                        new GroupWebsocketDTO(
+                                GroupWebsocketStatus.CHECK_MARK_UPDATE,
+                                null,
+                                    user.getGroup().getId(),user.getGroup().getMaxPending(),
+                                    maxReached
+                        ));
+            }
+        }
+    }
+    @Transactional
+    public GroupMessageDTO saveGroupMessage(String content, List<MultipartFile> files, long groupId, String name) throws IOException {
+        Group g = Grepo.findById(groupId).orElseThrow();
+        Message m = new Message();
+        m.setGroup(g);
+        m.setContent(content);
+        m.setPostedOn(LocalDateTime.now());
+        User u = Urepo.findByUsername(name);
+
+        m.setUser(u);
+
+        if(files!=null){
+            for(MultipartFile file: files){
+                String uniqueName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                String path = uploadDir + File.separator + uniqueName;
+
+                Multimedia media = new Multimedia();
+                media.setFileType(file.getContentType());
+                media.setFilePath(path);
+                media.setFileName(uniqueName);
+                media.setMessage(m);
+                m.getMedia().add(media);
+
+                file.transferTo(new File(path));
+            }
+        }
+
+        g.setLatest(m);
+        UGrepo.incrementPendingAndReached(u.getId(), groupId);
+        g.setMaxPending(g.getMaxPending()+1);
+        g.setMaxReached(g.getMaxReached()+1);
+
+        GroupMessageDTO response = new GroupMessageDTO(
+                m.getContent(),
+                m.getPostedOn(),
+                m.getMedia()
+                        .stream()
+                        .map(media->
+                            new MultimediaDTO(
+                                    media.getId(),
+                                    media.getFileName(),
+                                    media.getFileType()
+                            )
+                        )
+                        .toList(),
+                name,
+                u.getProfileImg().getFileName()
+        );
+        messagingTemplate.convertAndSend("/topic/group/"+groupId, new GroupWebsocketDTO(GroupWebsocketStatus.MESSAGE, response, groupId,0,0));
+
+        return response;
+    }
+
+    public ChatContextDTO getGroupMessages(long id, LocalDateTime cursor) {
+
+        System.out.println(id);
+        Group g = Grepo.findById(id).orElseThrow();
+        List<Message> messages = Mrepo.getGroupMessages(id, cursor,PageRequest.of(0,20));
+
+        List<MessageDTO> messageDTOS = messages.stream()
+                .map(message->
+                        new MessageDTO(
+                                message.getContent(),
+                                message.getPostedOn(),
+                                message.getMedia().stream()
+                                                .map(media->
+                                                        new MultimediaDTO(
+                                                                media.getId(),
+                                                                media.getFileName(),
+                                                                media.getFileType()
+                                                        )
+                                                ).toList(),
+                                message.getUser().getUsername(),
+                                message.getUser().getProfileImg().getFileName()
+                        )
+                ).toList();
+
+        return new ChatContextDTO(messageDTOS, g.getMaxReached(), g.getMaxPending());
+    }
+
+
+    @Transactional
+    public void propogateReceived(long groupId, Long id) {
+        UserGroup ug = UGrepo.findById(new UserGroupId(groupId, id)).orElseThrow();
+        Group g = Grepo.findById(groupId).orElseThrow();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+
+        System.out.println(ug.getUser().getUsername()+" logged in");
+        System.out.println(ug.getPending());
+        System.out.println(ug.getReached());
+        System.out.println(g.getMaxPending());
+        System.out.println(g.getMaxReached());
+
+
+
+        if(g.getMaxReached() > ug.getReached()){
+            ug.setReached(0);
+        }else{
+            ug.setReached(0);
+            int maxReached = UGrepo.getMaxReached(groupId, id);
+            if(maxReached < g.getMaxReached()) {
+                g.setMaxReached(maxReached);
+                messagingTemplate.convertAndSend("/topic/group/" + groupId, new GroupWebsocketDTO(GroupWebsocketStatus.CHECK_MARK_UPDATE, null, groupId, g.getMaxPending(), maxReached));
+                }
+            }
+    }
+
+    @Transactional
+    public void propogateReceivedAndPending(long groupId, Long id){
+        UserGroup ug = UGrepo.findById(new UserGroupId(groupId, id)).orElseThrow();
+        Group g = Grepo.findById(groupId).orElseThrow();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println(ug.getUser().getUsername()+" has chat open");
+        System.out.println(ug.getPending());
+        System.out.println(ug.getReached());
+        System.out.println(g.getMaxPending());
+        System.out.println(g.getMaxReached());
+
+
+        int maxReached;
+        int maxPending;
+        boolean flag = false;
+
+        if(g.getMaxReached() > ug.getReached()){
+            ug.setReached(0);
+        }else{
+            ug.setReached(0);
+            maxReached = UGrepo.getMaxReached(groupId, id);
+
+            if(maxReached < g.getMaxReached()){
+                flag = true;
+                g.setMaxReached(maxReached);
+            }
+        }
+
+
+        if(g.getMaxPending() > ug.getPending()){
+            ug.setPending(0);
+        }else{
+            ug.setPending(0);
+            maxPending = UGrepo.getMaxPending(groupId, id);
+            if(maxPending < g.getMaxPending()){
+                flag = true;
+                g.setMaxPending(maxPending);
+            }
+        }
+
+        if(flag){
+            messagingTemplate.convertAndSend("/topic/group/"+groupId, new GroupWebsocketDTO(GroupWebsocketStatus.CHECK_MARK_UPDATE, null, groupId,g.getMaxPending(),g.getMaxReached()));
+        }
+
+    }
+
+    @Transactional
+    public void propogatePending(long groupId, Long id) {
+        UserGroup ug = UGrepo.findById(new UserGroupId(groupId, id)).orElseThrow();
+        Group g = Grepo.findById(groupId).orElseThrow();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+
+        System.out.println(ug.getUser().getUsername()+" opened chat");
+        System.out.println(ug.getPending());
+        System.out.println(ug.getReached());
+        System.out.println(g.getMaxPending());
+        System.out.println(g.getMaxReached());
+
+        if(g.getMaxPending() > ug.getPending()){
+            ug.setPending(0);
+        }else{
+            ug.setPending(0);
+            int maxPending = UGrepo.getMaxPending(groupId, id);
+
+            if(maxPending< g.getMaxPending()){
+                g.setMaxPending(maxPending);
+                messagingTemplate.convertAndSend("/topic/group/"+groupId, new GroupWebsocketDTO(GroupWebsocketStatus.CHECK_MARK_UPDATE, null, groupId,maxPending,g.getMaxReached()));
+            }
+        }
     }
 }

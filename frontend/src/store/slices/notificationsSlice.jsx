@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit";
 import api from "../../api/api";
+import { SiTaketwointeractivesoftware } from "react-icons/si";
 
 export const getNotifications = createAsyncThunk(
   "notifications/getNotifications",
@@ -9,14 +10,17 @@ export const getNotifications = createAsyncThunk(
   }
 );
 
-const notificationsSlice = createSlice({
-  name: "notifications",
-  initialState: {
+
+const initialState =  {
     hasMore: true,
     notifications: [],
     loading: false,
     error: null,
-  },
+  }
+
+const notificationsSlice = createSlice({
+  name: "notifications",
+  initialState: initialState,
   reducers: {
     addNotification: (state, action) => {
       state.notifications.unshift({
@@ -24,6 +28,9 @@ const notificationsSlice = createSlice({
         ...action.payload,
       });
     },
+    clearNotification: (state, action)=>{
+      return initialState
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -52,5 +59,5 @@ const notificationsSlice = createSlice({
   },
 });
 
-export const {addNotification} = notificationsSlice.actions
+export const {addNotification, clearNotification} = notificationsSlice.actions
 export default notificationsSlice.reducer;

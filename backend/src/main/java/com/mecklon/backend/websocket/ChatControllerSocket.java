@@ -1,5 +1,6 @@
 package com.mecklon.backend.websocket;
 
+import com.mecklon.backend.repo.ConnectionsRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -46,6 +47,9 @@ public class ChatControllerSocket {
 //        message.setContent(message.getSender() + " joined the chat");
 //        return message;
 //    }
+
+    @Autowired
+    private ConnectionsRepo Crepo;
 
     @MessageMapping("/chat/receivedMessage")
     public void sendMessageSeen(@Payload Map<String, String> payload, Principal principal){

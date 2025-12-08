@@ -7,10 +7,9 @@ import { TfiControlShuffle } from "react-icons/tfi";
 
 function ChatInfo() {
   const room = useSelector((store) => store.chat);
-  console.log(room);
   if (room.isPrivate === false) {
     return (
-      <div className="flex gap-2 justify-baseline bg-red-600 items-center p-1">
+      <div className="flex gap-4 justify-baseline bg-red-600 items-center p-1">
         <div className="h-15 w-15 rounded-full overflow-hidden">
           <Image path={room.grpInfo.profileImgName} className="h-full w-full" />
         </div>
@@ -21,7 +20,7 @@ function ChatInfo() {
   }
 
   return (
-    <div className="flex gap-2 justify-baseline bg-red-600 items-center p-1">
+    <div className="flex gap-4 justify-baseline bg-red-600 items-center p-1">
       <div className="h-15 w-15 rounded-full overflow-hidden">
         <Image path={room.userInfo.profileImgName} className="h-full w-full" />
       </div>

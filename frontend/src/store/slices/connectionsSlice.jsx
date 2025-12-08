@@ -10,7 +10,7 @@ const initialState = {
   requestsFetchStatus: false,
   requestsFetchError: null,
   hasMoreRequests: true,
-  groups:[],
+  groups: [],
   groupSet: [],
   groupsFetchStatus: false,
   groupsFetchError: null,
@@ -36,14 +36,22 @@ export const setUnseenZero = createAsyncThunk(
   "connections/setUnseenZero",
   async (sender) => {
     await api.get("/setSeenMessage/" + sender);
-    return sender
+    return sender;
   }
 );
 
-export const getGroups = createAsyncThunk("connections/getGroups",async()=>{
-  const res = await api.get("/getGroups")
+export const setUnseenGroupZero = createAsyncThunk(
+  "connections/setUnseenGroupZero",
+  async (groupId) => {
+    await api.get("/sendGroupOpened/" + groupId);
+    return groupId;
+  }
+);
+
+export const getGroups = createAsyncThunk("connections/getGroups", async () => {
+  const res = await api.get("/getGroups");
   return res.data;
-})
+});
 
 const connectionsSlice = createSlice({
   name: "connections",
@@ -75,25 +83,47 @@ const connectionsSlice = createSlice({
         }
       }
     },
-    updateLatestMessage: (state, action)=>{
+    updateLatestMessage: (state, action) => {
       let contact = action.payload.contact;
-      for(let i = 0;i< state.connections.length;i++){
-        if(state.connections[i].name==contact){
-
+      for (let i = 0; i < state.connections.length; i++) {
+        if (state.connections[i].name == contact) {
           state.connections[i].postedOn = action.payload.time;
           state.connections[i].content = action.payload.content;
           state.connections[i].sender = action.payload.sender;
         }
       }
-    },setActivityStatus: (state, action)=>{
-      for(let i =0;i< state.connections.length;i++){
-        if(state.connections[i].name === action.payload.name){
+    },
+    updateLatestGroupMessage: (state, action) => {
+      let id = action.payload.id;
+      for (let i = 0; i < state.groups.length; i++) {
+        if (state.groups[i].id === id) {
+          state.groups[i].lastMessageTime = action.payload.time;
+          state.groups[i].latestMessage = action.payload.content;
+          state.groups[i].sender = action.payload.sender;
+        }
+      }
+    },
+    setActivityStatus: (state, action) => {
+      for (let i = 0; i < state.connections.length; i++) {
+        if (state.connections[i].name === action.payload.name) {
           state.connections[i].online = action.payload.online;
         }
       }
-    }, addGroup :(state, action)=>{
-      state.groups.unshift(action.payload)
-    }
+    },
+    addGroup: (state, action) => {
+      state.groups.unshift(action.payload);
+    },
+    incrementGroupUnseen: (state, action) => {
+      for (let i = 0; i < state.groups.length; i++) {
+        if (state.groups[i].id === action.payload.groupId) {
+          state.groups[i].pending++;
+          break;
+        }
+      }
+    },
+    clearConnections: () => {
+      return initialState;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -115,9 +145,9 @@ const connectionsSlice = createSlice({
         });
 
         state.connections = connectionWithId;
-        state.connectionSet = 
-          state.connections.map((connection) => connection.name)
-        
+        state.connectionSet = state.connections.map(
+          (connection) => connection.name
+        );
       })
       .addCase(getRequests.pending, (state) => {
         state.requestsFetchStatus = true;
@@ -137,31 +167,47 @@ const connectionsSlice = createSlice({
           state.hasMoreRequests = false;
         }
       })
-      .addCase(setUnseenZero.fulfilled,(state,action)=>{
-        for(let i = 0;i< state.connections.length;i++){
-          if(state.connections[i].name === action.payload){
+      .addCase(setUnseenZero.fulfilled, (state, action) => {
+        for (let i = 0; i < state.connections.length; i++) {
+          if (state.connections[i].name === action.payload) {
             state.connections[i].pending = 0;
           }
         }
       })
-      .addCase(getGroups.pending, (state,action)=>{
+      .addCase(setUnseenGroupZero.fulfilled, (state, action) => {
+        for (let i = 0; i < state.groups.length; i++) {
+          if (state.groups[i].id === action.payload) {
+            state.groups[i].pending = 0;
+          }
+        }
+      })
+      .addCase(getGroups.pending, (state, action) => {
         state.groupsFetchStatus = true;
         state.groupsFetchError = null;
       })
-      .addCase(getGroups.rejected,(state, action)=>{
+      .addCase(getGroups.rejected, (state, action) => {
         state.groupsFetchStatus = false;
-        state.groupsFetchError = action.error
+        state.groupsFetchError = action.error;
       })
-      .addCase(getGroups.fulfilled, (state, action)=>{
-        state.groupsFetchError= null;
+      .addCase(getGroups.fulfilled, (state, action) => {
+        state.groupsFetchError = null;
         state.groupsFetchStatus = false;
         state.groups = action.payload;
-        state.groupSet = action.payload.map(group=> group.id)
-      })
-      
+        state.groupSet = action.payload.map((group) => group.id);
+      });
   },
 });
 
-export const { addRequest, addConnection, removeRequest, incrementUnseen,updateLatestMessage ,setActivityStatus,addGroup} =
-  connectionsSlice.actions;
+export const {
+  addRequest,
+  addConnection,
+  updateLatestGroupMessage,
+  removeRequest,
+  incrementUnseen,
+  updateLatestMessage,
+  setActivityStatus,
+  addGroup,
+  incrementGroupUnseen,
+  clearConnections,
+} = connectionsSlice.actions;
 export default connectionsSlice.reducer;

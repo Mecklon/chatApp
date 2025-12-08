@@ -2,21 +2,26 @@ import React from "react";
 import { normalizeTime } from "../normalizeTime";
 import Image from "../hooks/Image";
 import avatar from "../public/avatar.svg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setGroup } from "../store/slices/chatSlice";
-
+import { setUnseenGroupZero } from "../store/slices/connectionsSlice";
+import { useSearchParams } from "react-router-dom";
 
 function Group({ group }) {
+  const dispatch = useDispatch();
+  const chatInfo = useSelector(store => store.chat)
 
-    const dispatch = useDispatch()
-
-    const handleClick = ()=>{
-        dispatch(setGroup(group))
-    }
-
+  const handleClick = () => {
+    if (chatInfo.id === group.id) return;
+    dispatch(setGroup(group));
+    dispatch(setUnseenGroupZero(group.id));
+  };
 
   return (
-    <div className="cursor-pointer flex px-3 py-2 gap-2 relative w-full items-center justify-center " onClick={handleClick}>
+    <div
+      className="cursor-pointer flex px-3 py-2 gap-2 relative w-full items-center justify-center "
+      onClick={handleClick}
+    >
       <div className="absolute right-1 top-1 text-xs">
         {normalizeTime(group.lastMessageTime)}
       </div>

@@ -1,6 +1,7 @@
 package com.mecklon.backend.websocket;
 
 import com.mecklon.backend.DTO.ActivityStatusDTO;
+import com.mecklon.backend.repo.ConnectionsRepo;
 import com.mecklon.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class WebSocketEventListener {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { GoPaperclip } from "react-icons/go";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { RxCross1 } from "react-icons/rx";
@@ -6,7 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMessage, sendMessage } from "../store/slices/chatSlice";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { nanoid } from "@reduxjs/toolkit";
-import { updateLatestMessage } from "../store/slices/connectionsSlice";
+import {
+  updateLatestMessage,
+  updateLatestGroupMessage,
+} from "../store/slices/connectionsSlice";
 import { formatTimeString } from "../formatTimeString";
 
 function MessageInput() {
@@ -20,11 +23,13 @@ function MessageInput() {
   const dispatch = useDispatch();
 
   const handleFileInput = () => {
+    console.log("changing");
     const newFiles = Array.from(fileInputRef.current.files);
     setFiles((prev) => {
       return [
         ...prev,
         ...newFiles.map((file) => ({
+          id: nanoid(),
           file,
           frontEndObj: URL.createObjectURL(file),
         })),
@@ -65,35 +70,57 @@ function MessageInput() {
     files.forEach((file) => {
       formData.append("files", file.file);
     });
-    
-    formData.append("receiver", chatInfo.userInfo.name)
 
-    const id = nanoid()
-    dispatch(sendMessage({formData,id}));
+    if (chatInfo.isPrivate) {
+      formData.append("receiver", chatInfo.userInfo.name);
+    } else {
+      formData.append("groupId", chatInfo.id);
+    }
+
+    const id = nanoid();
+    dispatch(sendMessage({ formData, id, isPrivate: chatInfo.isPrivate }));
     const now = new Date();
     dispatch(
       addMessage({
         content: textInputRef.current.value,
         time: formatTimeString(),
-        media: files.map((file) => file.frontEndObj),
+        media: files.map((file) => {
+          return {
+            id: file.id,
+            frontEndObj: file.frontEndObj,
+            fileType: file.file.type,
+          };
+        }),
         username,
         saved: false,
         id,
-        notsaved: true
+        notsaved: true,
       })
     );
 
-    dispatch(updateLatestMessage({
-      content: textInputRef.current.value,
-      sender:username,
-      time: formatTimeString(),
-      contact: chatInfo.userInfo.name
-    }))
+    if (chatInfo.isPrivate) {
+      dispatch(
+        updateLatestMessage({
+          content: textInputRef.current.value,
+          sender: username,
+          time: formatTimeString(),
+          contact: chatInfo.userInfo.name,
+        })
+      );
+    } else {
+      dispatch(
+        updateLatestGroupMessage({
+          content: textInputRef.current.value,
+          sender: username,
+          time: formatTimeString(),
+          id: chatInfo.grpInfo.id,
+        })
+      );
+    }
 
-    textInputRef.current.value =""
-    setFiles([])
-    handleOverflow(e)
-    
+    textInputRef.current.value = "";
+    setFiles([]);
+    handleOverflow(e);
   };
   return (
     <form
@@ -107,10 +134,14 @@ function MessageInput() {
               key={file.frontEndObj}
               className="shrink-0 relative h-20 w-20 rounded-lg overflow-hidden border border-stone-700"
             >
-              <img className="h-full w-full" src={file.frontEndObj} />
+              {file.file.type.split("/")[0] === "image" ? (
+                <img className="h-full w-full object-contain bg-black" src={file.frontEndObj} />
+              ) : (
+                <video className="h-full w-full object-contain bg-black" src={file.frontEndObj} />
+              )}
               <RxCross1
                 onClick={() => handleRemoveFile(index)}
-                className="top-1 text-lg cursor-pointer right-1 absolute "
+                className="top-1 text-lg cursor-pointer right-1 absolute p-1 bg-[rgba(255,255,255,0.4)] rounded-full "
               />
             </div>
           );

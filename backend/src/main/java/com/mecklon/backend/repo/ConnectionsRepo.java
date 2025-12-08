@@ -106,6 +106,8 @@ public interface ConnectionsRepo extends JpaRepository<Connection, ConnectionKey
             """)
     void setReachedZero(Long id);
 
+
+
     @Modifying
     @Query("""
            update Connection c 

@@ -1,15 +1,14 @@
+import { useAuthContext } from "../hooks/useAuthContext";
 import React from "react";
 import { IoCheckmarkDone } from "react-icons/io5";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { FaRegClock } from "react-icons/fa";
-import { useAuthContext } from "../hooks/useAuthContext";
 import { normalizeTime } from "../normalizeTime";
 import { IoCheckmark } from "react-icons/io5";
+import Image from "../hooks/Image";
 import Multimedia from "./Multimedia";
-
-function PrivateMessage({ message, isSeen, hasReached,scrollBottom }) {
+function GroupMessage({ message, isSeen, hasReached, prev,scrollBottom }) {
   const { username } = useAuthContext();
-  
   if (username === message.username) {
     return (
       <div
@@ -38,20 +37,36 @@ function PrivateMessage({ message, isSeen, hasReached,scrollBottom }) {
       </div>
     );
   }
-
   return (
-    <div className={`${
-          message.media.length === 0 ? "max-w-3/4 " : " w-3/4 "
-        } self-start mt-1`}>
-      <div className="rounded-lg rounded-tl-none bg-red-500 p-1.5 text-2xl">
-        <div className="mb-1 break-all">{message.content}</div>
-        {message.media.length != 0 && (
-          <Multimedia scrollBottom={scrollBottom} media={message.media} preview={message.notsaved}></Multimedia>
+    <div className="flex gap-2 items-start">
+      {prev !== message.username ? (
+        <Image
+          path={message.profileImgName}
+          className={" rounded-full h-15 w-15"}
+        />
+      ): <div className="h-15 w-15"></div>}
+      <div
+        className={`${
+          message.media.length === 0 ? "max-w-3/4" : "w-3/4"
+        } flex flex-col`}
+      >
+        {prev !== message.username && (
+          <div className="text-xl font-medium mb-0.5">{message.username}</div>
         )}
+        <div className={`rounded-lg rounded-tl-none bg-red-500 p-1.5 text-2xl`}>
+          <div className="mg-2 break-all">{message.content}</div>
+          {message.media.length != 0 && (
+            <Multimedia
+            scrollBottom={scrollBottom}
+              media={message.media}
+              preview={message.notsaved}
+            ></Multimedia>
+          )}
+        </div>
+         <div className="text-sm">{normalizeTime(message.time)}</div>
       </div>
-      <div className="text-sm">{normalizeTime(message.time)}</div>
     </div>
   );
 }
 
-export default PrivateMessage;
+export default GroupMessage;

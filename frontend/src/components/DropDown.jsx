@@ -2,8 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import ProfileEditor from "./ProfileEditor";
 import api from "../api/api";
+import { useDispatch } from "react-redux";
+import { clearConnections } from "../store/slices/connectionsSlice";
+import { clearChats } from "../store/slices/chatSlice";
+import { clearNotification } from "../store/slices/notificationsSlice";
 const DropDown = React.forwardRef((prop, ref) => {
   const { setUsername, setEmail, setProfile ,setCaption} = useAuthContext();
+
+  const dispatch = useDispatch()
 
   const handleLogout = async() => {
     localStorage.removeItem("JwtToken");
@@ -11,6 +17,9 @@ const DropDown = React.forwardRef((prop, ref) => {
     setEmail(null);
     setProfile(null);
     setCaption(null);
+    dispatch(clearConnections())
+    dispatch(clearChats())
+    dispatch(clearNotification())
     await api.get('/logout')
   };
 

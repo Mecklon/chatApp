@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { getConnections, getGroups } from "../store/slices/connectionsSlice";
 import { getRequests } from "../store/slices/connectionsSlice";
 import { getNotifications } from "../store/slices/notificationsSlice";
-
+import useGetFetch from "../hooks/useGetFetch";
 function Home() {
   const dispatch = useDispatch();
+  const {fetch} = useGetFetch();
   useEffect(() => {
     const now = new Date();
     const tomorrow = new Date(now);
@@ -18,8 +19,6 @@ function Home() {
     dispatch(getRequests(tomorrow.toISOString().slice(0, 23)));
     dispatch(getNotifications(tomorrow.toISOString().slice(0, 23)));
     fetch("/receivedMessages");
-
-    console.log("aldfa;lfdj")
   }, []);
 
   
@@ -27,7 +26,7 @@ function Home() {
 
   return (
     <div
-      className='px-30 bg-amber-300 w-full h-screen grid p-1 grid-cols-[370px_1fr_370px] grid-rows-[60px_1fr] gap-1 [grid-template-areas:"header_header_header""sideBar_main_info"]
+      className='px-30 bg-amber-300 w-full h-full grid p-1 grid-cols-[370px_1fr_370px] grid-rows-[60px_1fr] gap-1 [grid-template-areas:"header_header_header""sideBar_main_info"]
     '
     >
       <Header />

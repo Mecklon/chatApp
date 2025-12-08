@@ -6,18 +6,24 @@ import {
   addConnection,
   addGroup,
   addRequest,
+  incrementGroupUnseen,
   incrementUnseen,
   setActivityStatus,
+  updateLatestGroupMessage,
   updateLatestMessage,
 } from "../store/slices/connectionsSlice";
 import { addNotification } from "../store/slices/notificationsSlice";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { createContext, useEffect, useRef, useState } from "react";
 import {
+  addGroupMessage,
   addReceivedMessage,
+  sendGroupReceived,
+  sendGroupSeen,
   setChatActivityStatus,
   setPendingZero,
   setReachedZero,
+  updateGroupMaxValues,
 } from "../store/slices/chatSlice";
 import { AiOutlineConsoleSql } from "react-icons/ai";
 
@@ -45,6 +51,12 @@ const WebSocketProvider = ({ children }) => {
   useEffect(() => {
     chatInfoRef.current = chatInfo;
   }, [chatInfo]);
+
+  const { username } = useAuthContext();
+  const usernameRef = useRef(username);
+  useEffect(() => {
+    usernameRef.current = username;
+  }, [username]);
 
   useEffect(() => {
     let client = clientRef.current;
@@ -133,7 +145,6 @@ const WebSocketProvider = ({ children }) => {
       const name = connectionSet[i];
       if (isSubscribed.current.has(name)) continue;
       isSubscribed.current.add(name);
-      console.log("subbing to",name)
       clientRef.current.subscribe("/topic/connection/" + name, (payload) => {
         let activityStatus = JSON.parse(payload.body);
         dispatch(setActivityStatus(activityStatus));
@@ -143,7 +154,37 @@ const WebSocketProvider = ({ children }) => {
     groupSet.forEach((group) => {
       if (!isSubscribed.current.has(group)) {
         isSubscribed.current.add(group);
-        // subscribe here
+        clientRef.current.subscribe("/topic/group/" + group, (payload) => {
+          const body = JSON.parse(payload.body);
+          console.log(body);
+          console.log()
+          if (body.status === "CHECK_MARK_UPDATE") {
+
+            dispatch(updateGroupMaxValues(body));
+          } else if (body.message.username !== usernameRef.current) {
+            dispatch(
+              updateLatestGroupMessage({
+                id: group,
+                time: body.message.time,
+                content: body.message.content,
+                sender: body.message.username,
+              })
+            );
+            if (
+              !chatInfoRef.current ||
+              !chatInfoRef.current.grpInfo ||
+              chatInfoRef.current.grpInfo.id !== body.groupId
+            ) {
+              console.log("group not open sending increment sunseen")
+              dispatch(sendGroupReceived({ groupId: body.groupId }));
+              dispatch(incrementGroupUnseen(body));
+            } else {
+              console.log("current group open sending seen")
+              dispatch(sendGroupSeen({ groupId: body.groupId }));
+              dispatch(addGroupMessage(body));
+            }
+          }
+        });
       }
     });
   }, [connectionSet, wsConnected, groupSet]);
