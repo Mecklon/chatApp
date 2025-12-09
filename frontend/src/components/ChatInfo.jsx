@@ -1,12 +1,19 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "../hooks/Image";
-import avatar from "../public/avatar.svg";
 import { normalizeTime } from "../normalizeTime";
-import { TfiControlShuffle } from "react-icons/tfi";
+import { TbDotsVertical } from "react-icons/tb";
+import { setExpanded } from "../store/slices/TileSlice";
 
 function ChatInfo() {
+
   const room = useSelector((store) => store.chat);
+  
+  const dispatch = useDispatch();
+
+  const tile = useSelector(store=>store.tile)
+  console.log(tile)
+
+
   if (room.isPrivate === false) {
     return (
       <div className="flex gap-4 justify-baseline bg-red-600 items-center p-1">
@@ -32,6 +39,10 @@ function ChatInfo() {
         ) : (
           <div>{"Last seen, " + normalizeTime(room.userInfo.lastSeen)}</div>
         )}
+      </div>
+
+      <div className="p-1 rounded-full ml-auto hover:bg-[rgba(0,0,0,0.5)] duration-200 cursor-pointer" onClick={()=>dispatch(setExpanded(true))} >
+        <TbDotsVertical  className=" text-3xl" />
       </div>
     </div>
   );

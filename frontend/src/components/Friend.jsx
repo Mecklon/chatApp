@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPrivateRoom } from "../store/slices/chatSlice";
 import { setUnseenZero } from "../store/slices/connectionsSlice";
 import { normalizeTime } from "../normalizeTime";
+import { FaImage } from "react-icons/fa6";
 function Friend({ connection }) {
   const dispatch = useDispatch();
   const chatInfo = useSelector(store=> store.chat)
@@ -15,13 +16,13 @@ function Friend({ connection }) {
   };
 
   const room = useSelector((store) => store.chat);
-  
   return (
     <div
       onClick={handleClick}
       className="cursor-pointer flex px-3 py-2 gap-2 relative w-full items-center justify-center "
     >
       <div className="absolute right-1 top-1 text-xs">{normalizeTime(connection.postedOn)}</div>
+        {connection.online && <div className="h-3 w-3 bg-green-400 rounded-full absolute top-2 left-3"></div>}
       <div className="bg-red-600 h-15 w-15 shrink-0 rounded-full overflow-hidden">
         <Image
           path={connection.profileImgName}
@@ -32,7 +33,9 @@ function Friend({ connection }) {
       <div className="grow min-w-0">
         <div className="text-ellipsis text-xl font-bold">{connection.name}</div>
         <div className="text-ellipsis text-nowrap overflow-hidden text-sm">
-          {connection.sender && connection.sender + " : "+connection.content}
+          {connection.sender && connection.sender + " : "}
+          
+          {connection.content && connection.content}
         </div>
       </div>
       {connection.pending != 0 && (

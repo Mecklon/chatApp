@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
 
-const Video = ({
+const Audio = ({
   path = null,
   className = "",
   fallback = null,
   controls = true,
   autoPlay = false,
   loop = false,
-  muted = false,
   onLoadedDataCallBack,
 }) => {
   const [src, setSrc] = useState(null);
@@ -19,54 +18,42 @@ const Video = ({
 
     let objectUrl;
 
-    const loadVideo = async () => {
+    const loadAudio = async () => {
       try {
         setLoading(true);
-        const res = await api.get(`http://localhost:9090/api/files/${path}`, {
-          responseType: "blob",
-        });
+        const res = await api.get(`/api/files/${path}`, { responseType: "blob" });
 
         objectUrl = URL.createObjectURL(res.data);
         setSrc(objectUrl);
       } catch (err) {
-        console.log("video fetch error:", err);
+        console.error("Audio fetch error:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadVideo();
+    loadAudio();
 
     return () => {
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, [path]);
 
-  if (loading) {
-    return <div>Loading video...</div>;
-  }
-
-  if (!src && fallback) {
-    return fallback;
-  }
+  if (loading) return <div>Loading audio...</div>;
+  if (!src && fallback) return fallback;
 
   return (
-    <video
-      onLoadedData={() => {
-        if (onLoadedDataCallBack) {
-          onLoadedDataCallBack();
-        }
-      }}
+    <audio
       src={src}
       className={className}
       controls={controls}
       autoPlay={autoPlay}
       loop={loop}
-      muted={muted}
-      // make sure to remove in setup
-      controlsList="nofullscreen"
+      onLoadedData={() => {
+        if (onLoadedDataCallBack) onLoadedDataCallBack();
+      }}
     />
   );
 };
 
-export default Video;
+export default Audio;

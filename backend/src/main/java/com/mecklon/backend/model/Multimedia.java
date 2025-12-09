@@ -18,6 +18,14 @@ import lombok.NoArgsConstructor;
                 @Index(
                         name="message_query_association",
                         columnList = "message_id"
+                ),
+                @Index(
+                        name="group_query_association",
+                        columnList = "group_id"
+                ),
+                @Index(
+                        name="connection_query_association",
+                        columnList = "connection_user1_id, connection_user2_id"
                 )
         }
 )
@@ -36,7 +44,17 @@ public class Multimedia {
     private String filePath;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false)
-    Message message ;
+    @JoinColumn(nullable = false,name = "message_id")
+    private Message message;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn( name = "group_id")
+    private Group group;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "connection_user1_id", referencedColumnName = "user1_id"),
+            @JoinColumn(name = "connection_user2_id", referencedColumnName = "user2_id")
+    })
+    private Connection connection;
 }

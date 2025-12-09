@@ -14,10 +14,13 @@ function Gallery({ setExpand, media }) {
       {media.map((m) => {
         return (
           <div className="h-full w-full flex items-center justify-center shrink-0">
-            {m.fileType.split("/")[0]=="image" ?
-            <Image path={m.fileName} key={m.id} className="h-[90%]"/>:
-            <Video path={m.fileName} key={m.id} className="h-[90%]"/>
-        }
+            {m.fileType.split("/")[0] == "image" ? (
+              <Image path={m.fileName} key={m.id} className="h-[90%]" />
+            ) : m.fileType.split("/")[0] == "video" ? (
+              <Video path={m.fileName} key={m.id} className="h-[90%]" />
+            ) : (
+              <Video path={m.fileName} key={m.id} className="w-[70vw]" />
+            )}
           </div>
         );
       })}

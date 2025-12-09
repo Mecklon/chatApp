@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ChatInfo from "./ChatInfo";
 import Messages from "./Messages";
 import MessageInput from "./MessageInput";
@@ -13,6 +13,8 @@ function Chat() {
       <div className="[grid-area:main] [min-width:400px] text-center text-5xl font-bold pt-10 h-full">Select a chat</div>
     );
   }
+
+
   return (
     <div className="bg-red-300 [grid-area:main] flex flex-col h-full min-h-0">
       <ChatInfo />

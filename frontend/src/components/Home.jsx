@@ -9,31 +9,32 @@ import { getNotifications } from "../store/slices/notificationsSlice";
 import useGetFetch from "../hooks/useGetFetch";
 function Home() {
   const dispatch = useDispatch();
-  const {fetch} = useGetFetch();
+  const { fetch } = useGetFetch();
   useEffect(() => {
     const now = new Date();
     const tomorrow = new Date(now);
     tomorrow.setDate(now.getDate() + 1);
     dispatch(getConnections());
-    dispatch(getGroups())
+    dispatch(getGroups());
     dispatch(getRequests(tomorrow.toISOString().slice(0, 23)));
     dispatch(getNotifications(tomorrow.toISOString().slice(0, 23)));
     fetch("/receivedMessages");
   }, []);
 
-  
-
+  const { expanded } = useSelector((store) => store.tile);
 
   return (
     <div
-      className='px-30 bg-amber-300 w-full h-full grid p-1 grid-cols-[370px_1fr_370px] grid-rows-[60px_1fr] gap-1 [grid-template-areas:"header_header_header""sideBar_main_info"]
-    '
+      className={`px-30 bg-amber-300 w-full h-full grid p-1 grid-cols-[370px_1fr_370px] grid-rows-[60px_1fr] gap-1 [grid-template-areas:"header_header_header""${
+        expanded ? "sideBar_main_info" : "sideBar_main_main"
+      }"]
+  `}
     >
       <Header />
 
       <Contacts />
       <Chat />
-      <div className="bg-amber-950 [grid-area:info]"></div>
+      {expanded && <div className="bg-amber-950 [grid-area:info]"></div>}
     </div>
   );
 }

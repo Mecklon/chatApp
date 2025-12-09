@@ -156,10 +156,8 @@ const WebSocketProvider = ({ children }) => {
         isSubscribed.current.add(group);
         clientRef.current.subscribe("/topic/group/" + group, (payload) => {
           const body = JSON.parse(payload.body);
-          console.log(body);
-          console.log()
-          if (body.status === "CHECK_MARK_UPDATE") {
 
+          if (body.status === "CHECK_MARK_UPDATE") {
             dispatch(updateGroupMaxValues(body));
           } else if (body.message.username !== usernameRef.current) {
             dispatch(
@@ -175,11 +173,9 @@ const WebSocketProvider = ({ children }) => {
               !chatInfoRef.current.grpInfo ||
               chatInfoRef.current.grpInfo.id !== body.groupId
             ) {
-              console.log("group not open sending increment sunseen")
               dispatch(sendGroupReceived({ groupId: body.groupId }));
               dispatch(incrementGroupUnseen(body));
             } else {
-              console.log("current group open sending seen")
               dispatch(sendGroupSeen({ groupId: body.groupId }));
               dispatch(addGroupMessage(body));
             }

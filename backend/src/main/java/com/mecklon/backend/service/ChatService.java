@@ -98,6 +98,7 @@ public class ChatService {
             media.setFileType(file.getContentType());
             media.setFileName(uniqueName);
             media.setMessage(mess);
+            media.setConnection(c);
             mess.getMedia().add(media);
             file.transferTo(new File(path));
 
@@ -212,6 +213,7 @@ public class ChatService {
                 media.setFilePath(path);
                 media.setFileName(uniqueName);
                 media.setMessage(m);
+                media.setGroup(g);
                 m.getMedia().add(media);
 
                 file.transferTo(new File(path));
