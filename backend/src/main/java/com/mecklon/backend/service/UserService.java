@@ -30,6 +30,10 @@ public class UserService {
     @Autowired
     private GroupRepo Grepo;
 
+
+    @Autowired
+    private UserGroupRepo UGrepo;
+
     @Autowired
     private NotificationRepo Nrepo;
 
@@ -281,5 +285,35 @@ public class UserService {
 
     public List<GroupDTO> getGroups(Long id) {
         return Grepo.getGroups(id);
+    }
+
+    public UserInfoDTO getUserData(String username) {
+        User u = repo.findByUsername(username);
+        return new UserInfoDTO(u.getCaption());
+    }
+
+    public List<GroupMemberDTO> getMembers(long id) {
+        return repo.getGroupMembers(id);
+    }
+
+    public void kickMember(String username, Long id, Long principalId, String principalUsername) {
+        UserGroup ug = UGrepo.findById(new UserGroupId(id, principalId)).orElseThrow();
+        Group g = Grepo.findById(id).orElseThrow();
+
+        if(!ug.isAdmin()){
+            throw new RuntimeException("not an admin");
+        }
+
+        User kickedUser = repo.findByUsername(username);
+        UserGroup connection = UGrepo.findById(new UserGroupId(kickedUser.getId(), principalId)).orElseThrow();
+
+        Message m = new Message().builder()
+                .content(principalUsername+" kicked out "+username)
+                .group(g)
+                .postedOn(LocalDateTime.now())
+                .build();
+
+        UGrepo.delete(connection);
+
     }
 }

@@ -7,6 +7,7 @@ import { getConnections, getGroups } from "../store/slices/connectionsSlice";
 import { getRequests } from "../store/slices/connectionsSlice";
 import { getNotifications } from "../store/slices/notificationsSlice";
 import useGetFetch from "../hooks/useGetFetch";
+import InfoTab from "./InfoTab";
 function Home() {
   const dispatch = useDispatch();
   const { fetch } = useGetFetch();
@@ -25,16 +26,17 @@ function Home() {
 
   return (
     <div
-      className={`px-30 bg-amber-300 w-full h-full grid p-1 grid-cols-[370px_1fr_370px] grid-rows-[60px_1fr] gap-1 [grid-template-areas:"header_header_header""${
-        expanded ? "sideBar_main_info" : "sideBar_main_main"
-      }"]
-  `}
+      className={`px-30 bg-amber-300 w-full h-full grid p-1 grid-cols-[370px_1fr_370px] grid-rows-[60px_1fr] gap-1 ${
+        expanded
+          ? '[grid-template-areas:"header_header_header""sideBar_main_info"]'
+          : '[grid-template-areas:"header_header_header""sideBar_main_main"]'
+      }`}
     >
       <Header />
 
       <Contacts />
       <Chat />
-      {expanded && <div className="bg-amber-950 [grid-area:info]"></div>}
+      {expanded && <InfoTab />}
     </div>
   );
 }

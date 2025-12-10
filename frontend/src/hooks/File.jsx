@@ -46,7 +46,10 @@ const File = ({ path = null, fileName = "file", fileType = null }) => {
   if (!src) return <div>Failed to load file</div>;
 
   return (
-    <div onClick={e=>e.stopPropagation()} className="text-sm flex gap-2 bg-stone-600 p-2 rounded-sm items-center cursor-auto">
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="text-sm flex gap-2 bg-stone-600 p-2 rounded-sm items-center cursor-auto"
+    >
       <div className="bg-stone-800 rounded-full h-17 w-17 shrink-0 p-3">
         {fileType === "application/pdf" ? (
           <img src={pdf} className="h-full" />
@@ -54,17 +57,13 @@ const File = ({ path = null, fileName = "file", fileType = null }) => {
           <img src={word} className="h-full" />
         ) : fileType ===
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? (
-          <img className="h-full" src={ppt} />
-        ) : (
           <img className="h-full" src={excel} />
+        ) : (
+          <img className="h-full" src={ppt} />
         )}
       </div>
-      <div className="grow">Download {fileName}</div>
-      <a
-        href={src}
-        download={fileName}
-        id={`link-${fileName}`}
-      >
+      <div className="grow break-all">Download {fileName}</div>
+      <a href={src} download={fileName} id={`link-${fileName}`}>
         <div
           htmlFor={`link-${fileName}`}
           className="hover:bg-[rgba(0,0,0,0.5)] duration-200 cursor-pointer p-4 rounded-full shrink-0"

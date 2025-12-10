@@ -45,6 +45,22 @@ export const sendGroupSeen = createAsyncThunk(
   }
 );
 
+export const setFriendRoom = createAsyncThunk(
+  "chat/setFriendRoom",
+  async (username, { getState, dispatch }) => {
+    const { connection } = getState();
+    const friends = connection.connections;
+    console.log(username)
+
+    friends.forEach((f) => {
+      if (f.name === username) {
+        dispatch(setPrivateRoom(f));
+      }
+    });
+    return;
+  }
+);
+
 const initialState = {
   id: null,
   chats: [],
@@ -71,8 +87,8 @@ const chatSlice = createSlice({
       state.isPrivate = true;
     },
     addMessage: (state, action) => {
-      console.log(action.payload)
-      state.chats.push(action.payload );
+      console.log(action.payload);
+      state.chats.push(action.payload);
       state.pending++;
       state.reached++;
     },

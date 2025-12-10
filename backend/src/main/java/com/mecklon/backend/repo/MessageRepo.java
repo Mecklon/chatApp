@@ -24,23 +24,22 @@ public interface MessageRepo extends JpaRepository<Message, Long> {
 
     // use left join fetch to get media and user eagerly, or will lead to n+1 problem
     @Query("""
-            select 
-            m
-            from 
-            Message m
-            where
-            m.connection.key = :id
-            and
-            m.postedOn < :cursor
+            select distinct m
+            from Message m
+            left join fetch m.user
+            left join fetch m.media
+            where m.connection.key = :id
+            and m.postedOn < :cursor
             order by m.postedOn desc
-            """)
+    """)
+
     public List<Message> getMessage(@Param("cursor") LocalDateTime cursor, @Param("id") ConnectionKey id, Pageable page);
 
 
 
     // using left join fetch to eagerly get media and user associated with user
     @Query("""
-            select m from
+            select distinct m from
             Message m
             left join fetch m.media media
             left join fetch m.user user

@@ -107,3 +107,17 @@ textarea::-webkit-scrollbar {
 .checkBlue:has(input:checked){
   background-color: rgb(167, 211, 252);
 }
+
+.customBorder{
+  position: relative;
+}
+.customBorder::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  display: block;
+  background-color: yellow;
+  height: 3px;
+  top: 0;
+  right: 0
+}

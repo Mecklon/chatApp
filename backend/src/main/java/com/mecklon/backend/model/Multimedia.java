@@ -43,6 +43,9 @@ public class Multimedia {
     @Column(nullable = false)
     private String filePath;
 
+    @Column(nullable = false)
+    private MultimediaType type;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false,name = "message_id")
     private Message message;

@@ -1,9 +1,6 @@
 package com.mecklon.backend.service;
 
-import com.mecklon.backend.DTO.ChatContextDTO;
-import com.mecklon.backend.DTO.GroupMessageDTO;
-import com.mecklon.backend.DTO.MessageDTO;
-import com.mecklon.backend.DTO.MultimediaDTO;
+import com.mecklon.backend.DTO.*;
 import com.mecklon.backend.model.*;
 import com.mecklon.backend.repo.*;
 import jakarta.transaction.Transactional;
@@ -37,6 +34,9 @@ public class ChatService {
 
     @Autowired
     private UserGroupRepo UGrepo;
+
+    @Autowired
+    MultimediaRepo MuRepo;
 
 
 
@@ -99,6 +99,17 @@ public class ChatService {
             media.setFileName(uniqueName);
             media.setMessage(mess);
             media.setConnection(c);
+
+            if (file.getContentType() != null && file.getContentType().startsWith("image")) {
+                media.setType(MultimediaType.IMAGE);
+            }else if(file.getContentType()!=null && file.getContentType().startsWith("video")){
+                media.setType(MultimediaType.VIDEO);
+            }else if(file.getContentType()!=null && file.getContentType().startsWith("audio")){
+                media.setType(MultimediaType.AUDIO);
+            }else{
+                media.setType(MultimediaType.FILE);
+            }
+
             mess.getMedia().add(media);
             file.transferTo(new File(path));
 
@@ -216,6 +227,16 @@ public class ChatService {
                 media.setGroup(g);
                 m.getMedia().add(media);
 
+                if (file.getContentType() != null && file.getContentType().startsWith("image")) {
+                    media.setType(MultimediaType.IMAGE);
+                }else if(file.getContentType()!=null && file.getContentType().startsWith("video")){
+                    media.setType(MultimediaType.VIDEO);
+                }else if(file.getContentType()!=null && file.getContentType().startsWith("audio")){
+                    media.setType(MultimediaType.AUDIO);
+                }else{
+                    media.setType(MultimediaType.FILE);
+                }
+
                 file.transferTo(new File(path));
             }
         }
@@ -278,17 +299,6 @@ public class ChatService {
     public void propogateReceived(long groupId, Long id) {
         UserGroup ug = UGrepo.findById(new UserGroupId(groupId, id)).orElseThrow();
         Group g = Grepo.findById(groupId).orElseThrow();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-
-        System.out.println(ug.getUser().getUsername()+" logged in");
-        System.out.println(ug.getPending());
-        System.out.println(ug.getReached());
-        System.out.println(g.getMaxPending());
-        System.out.println(g.getMaxReached());
 
 
 
@@ -308,15 +318,7 @@ public class ChatService {
     public void propogateReceivedAndPending(long groupId, Long id){
         UserGroup ug = UGrepo.findById(new UserGroupId(groupId, id)).orElseThrow();
         Group g = Grepo.findById(groupId).orElseThrow();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println(ug.getUser().getUsername()+" has chat open");
-        System.out.println(ug.getPending());
-        System.out.println(ug.getReached());
-        System.out.println(g.getMaxPending());
-        System.out.println(g.getMaxReached());
+
 
 
         int maxReached;
@@ -354,19 +356,10 @@ public class ChatService {
     }
 
     @Transactional
-    public void propogatePending(long groupId, Long id) {
+    public void propogatePending(long groupId, long id) {
         UserGroup ug = UGrepo.findById(new UserGroupId(groupId, id)).orElseThrow();
         Group g = Grepo.findById(groupId).orElseThrow();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
 
-        System.out.println(ug.getUser().getUsername()+" opened chat");
-        System.out.println(ug.getPending());
-        System.out.println(ug.getReached());
-        System.out.println(g.getMaxPending());
-        System.out.println(g.getMaxReached());
 
         if(g.getMaxPending() > ug.getPending()){
             ug.setPending(0);
@@ -379,5 +372,47 @@ public class ChatService {
                 messagingTemplate.convertAndSend("/topic/group/"+groupId, new GroupWebsocketDTO(GroupWebsocketStatus.CHECK_MARK_UPDATE, null, groupId,maxPending,g.getMaxReached()));
             }
         }
+    }
+
+    public List<MultimediaDTO> getVisualMediaPage(String user1Name, long user2Id, long cursor) {
+        User user1 = Urepo.findByUsername(user1Name);
+        ConnectionKey key;
+        if(user1.getId()< user2Id){
+            key = new ConnectionKey(user1.getId(), user2Id);
+        }else{
+            key = new ConnectionKey(user2Id, user1.getId());
+        }
+
+
+        List<MultimediaDTO> res = MuRepo.findVisualMediaPageByConnectionKey(key, cursor, MultimediaType.FILE,PageRequest.of(0,20));
+        return res;
+    }
+
+    public List<MultimediaDTO> getDocumentPage(String user1Name, long user2Id, long cursor){
+        User user1 = Urepo.findByUsername(user1Name);
+        ConnectionKey key;
+        if(user1.getId()< user2Id){
+            key = new ConnectionKey(user1.getId(), user2Id);
+        }else{
+            key = new ConnectionKey(user2Id, user1.getId());
+        }
+
+        return MuRepo.findDocumentPageByConnectionKey(key , cursor, MultimediaType.FILE, PageRequest.of(0, 20));
+    }
+
+    public GroupInfoDTO getGroupData(long id, Long principalId) {
+        Group g = Grepo.findById(id).orElseThrow();
+        UserGroup ug = UGrepo.findById(new UserGroupId(id, principalId)).orElseThrow();
+
+
+        return new GroupInfoDTO(g.getCaption(), ug.isAdmin());
+    }
+
+    public List<MultimediaDTO> getGroupVisualMedia(long id, long cursor) {
+        return MuRepo.findGroupVisualMedia(id, cursor, MultimediaType.FILE,PageRequest.of(0,20));
+    }
+
+    public List<MultimediaDTO> getGroupDocumentMedia(long id, long cursor) {
+        return MuRepo.findGroupDocumentMedia(id, cursor, MultimediaType.FILE,PageRequest.of(0,20));
     }
 }

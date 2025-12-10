@@ -1,5 +1,6 @@
 package com.mecklon.backend.repo;
 
+import com.mecklon.backend.DTO.GroupMemberDTO;
 import com.mecklon.backend.DTO.Person;
 import com.mecklon.backend.model.User;
 import org.springframework.data.domain.Pageable;
@@ -73,5 +74,17 @@ public interface UserRepo extends JpaRepository<User, Long> {
     @Modifying
     @Query("update User u set u.isOnline = false where u.username = :user")
     void setOffline(@Param("user") String user);
+
+    @Query("""
+             select new com.mecklon.backend.DTO.GroupMemberDTO(
+                ug.user.username,
+                p.fileName,
+                ug.isAdmin
+            )
+            from UserGroup ug
+            left join ug.user.profileImg p
+            where ug.group.id = :id
+            """)
+    List<GroupMemberDTO> getGroupMembers(long id);
 }
 

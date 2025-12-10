@@ -26,6 +26,9 @@ public class ChatController {
 
 
 
+
+
+
     @PostMapping("/getChats")
     public ResponseEntity<ChatContextDTO> getMessages(@RequestBody MessageFetchRequest req){
         try{
@@ -123,4 +126,68 @@ public class ChatController {
         }
     }
 
+    @GetMapping("/getVisualMedia/{username}/{cursor}")
+    public ResponseEntity<List<MultimediaDTO>> getVisualMedia(@PathVariable("username") String user1, @AuthenticationPrincipal UserPrincipal principal,@PathVariable("cursor") long cursor){
+        try{
+            if(cursor==-1){
+                cursor = Long.MAX_VALUE;
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(cs.getVisualMediaPage(user1, principal.getId(), cursor));
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/getDocumentMedia/{username}/{cursor}")
+    public ResponseEntity<List<MultimediaDTO>> getDocumentMedia(@PathVariable("username") String user1, @AuthenticationPrincipal UserPrincipal principal,@PathVariable("cursor") long cursor){
+        try{
+            if(cursor==-1){
+                cursor = Long.MAX_VALUE;
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(cs.getDocumentPage(user1, principal.getId(), cursor));
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @GetMapping("/getGroupData/{groupId}")
+    public ResponseEntity<GroupInfoDTO> getGroupInfo(@PathVariable("groupId") long id, @AuthenticationPrincipal UserPrincipal principal){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(cs.getGroupData(id, principal.getId()));
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("getGroupVisualMedia/{groupId}/{cursor}")
+    public ResponseEntity<List<MultimediaDTO>> getGroupVisualMedia(@PathVariable("groupId") long id, @PathVariable("cursor") long cursor){
+        try{
+
+            if(cursor==-1){
+                cursor = Long.MAX_VALUE;
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(cs.getGroupVisualMedia(id, cursor));
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+
+    @GetMapping("getGroupDocumentMedia/{groupId}/{cursor}")
+    public ResponseEntity<List<MultimediaDTO>> getGroupDocumentMedia(@PathVariable("groupId") long id, @PathVariable("cursor") long cursor){
+        try{
+            if(cursor==-1){
+                cursor = Long.MAX_VALUE;
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(cs.getGroupDocumentMedia(id, cursor));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

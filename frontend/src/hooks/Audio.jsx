@@ -9,6 +9,7 @@ const Audio = ({
   autoPlay = false,
   loop = false,
   onLoadedDataCallBack,
+  
 }) => {
   const [src, setSrc] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -52,6 +53,7 @@ const Audio = ({
       onLoadedData={() => {
         if (onLoadedDataCallBack) onLoadedDataCallBack();
       }}
+      
     />
   );
 };

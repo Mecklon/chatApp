@@ -2,18 +2,22 @@ package com.mecklon.backend.controller;
 
 
 import com.mecklon.backend.DTO.*;
+import com.mecklon.backend.model.User;
 import com.mecklon.backend.model.UserPrincipal;
 import com.mecklon.backend.repo.GroupRepo;
+import com.mecklon.backend.repo.MultimediaRepo;
 import com.mecklon.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
+import org.springframework.data.jpa.repository.query.JSqlParserUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +33,8 @@ public class ConnectionsController {
 
     @Autowired
     private UserService us;
+
+
 
 
 
@@ -130,5 +136,40 @@ public class ConnectionsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/getUserData/{username}")
+    public ResponseEntity<UserInfoDTO> getUserInfo(@PathVariable("username") String username){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(us.getUserData(username));
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @GetMapping("/getMembers/{groupId}")
+    public ResponseEntity<List<GroupMemberDTO>> getMembers(@PathVariable("groupId") long id){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(us.getMembers(id));
+        } catch (Exception e) {
+
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/KickMember/{username}/{groupId}")
+    public ResponseEntity<Void> kickMember(@PathVariable("username") String username,@PathVariable("groupId") long groupId, @AuthenticationPrincipal UserPrincipal principal){
+        try{
+            us.kickMember(username,groupId,principal.getId(), principal.getUsername());
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
 }

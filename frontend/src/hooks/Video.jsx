@@ -10,6 +10,7 @@ const Video = ({
   loop = false,
   muted = false,
   onLoadedDataCallBack,
+  onClickCallBack
 }) => {
   const [src, setSrc] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -55,6 +56,11 @@ const Video = ({
       onLoadedData={() => {
         if (onLoadedDataCallBack) {
           onLoadedDataCallBack();
+        }
+      }}
+      onClick={(e)=>{
+        if(onClickCallBack){
+          onClickCallBack(e)
         }
       }}
       src={src}

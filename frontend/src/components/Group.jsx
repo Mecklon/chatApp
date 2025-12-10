@@ -35,7 +35,9 @@ function Group({ group }) {
       <div className="grow min-w-0">
         <div className="text-ellipsis text-xl font-bold">{group.name}</div>
         <div className="text-ellipsis text-nowrap overflow-hidden text-sm">
-          {group.sender && group.sender + " : " + group.latestMessage}
+          {group.sender && group.sender + " : "}
+
+          {group.content && group.content }
         </div>
       </div>
       {group.pending != 0 && (
