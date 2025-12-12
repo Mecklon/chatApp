@@ -17,7 +17,7 @@ function Person({ person }) {
   return (
     <div
       key={person.id}
-      className="flex items-center gap-2  py-2 px-1 bg-amber-500"
+      className="flex items-center gap-2  py-2 px-1 bg-bg-light text-text p-3 rounded-xl"
     >
       <div className="h-15 w-15 rounded-full overflow-hidden">
         <Image

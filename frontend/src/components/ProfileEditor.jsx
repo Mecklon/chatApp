@@ -63,10 +63,10 @@ const ProfileEditor = React.forwardRef((props, ref) => {
   }, [img]);
 
   return (
-    <div className="fixed top-0 left-0 right-0 bottom-0 bg-stone-950/75 z-1 flex items-center justify-center">
+    <div className="fixed top-0 left-0 right-0 bottom-0 bg-stone-950/75 z-1 flex items-center justify-center ">
       <div
         ref={ref}
-        className="rounded-lg bg-background h-full w-full max-h-200 max-w-150 flex flex-col gap-2 justify-start items-center py-10"
+        className="rounded-lg bg-background h-full w-full max-h-200 max-w-150 flex flex-col gap-2 justify-start items-center py-10 border border-border text-text"
       >
         <label
           htmlFor="imageInput"
@@ -100,11 +100,11 @@ const ProfileEditor = React.forwardRef((props, ref) => {
            
           <TiTick
             onClick={handleSubmit}
-            className="text-black text-5xl hover:scale-110 duration-300 cursor-pointer"
+            className=" text-5xl hover:scale-110 duration-300 cursor-pointer"
           />
           <ImCross
             onClick={handleCancel}
-            className="text-black text-2xl hover:scale-110 duration-300 cursor-pointer"
+            className=" text-2xl hover:scale-110 duration-300 cursor-pointer"
           />
         </div>
       </div>

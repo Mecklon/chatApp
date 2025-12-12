@@ -30,6 +30,9 @@ public class UserService {
     @Autowired
     private GroupRepo Grepo;
 
+    @Autowired
+    private MessageRepo Mrepo;
+
 
     @Autowired
     private UserGroupRepo UGrepo;
@@ -164,7 +167,8 @@ public class UserService {
                                 null,
                                 null,
                                 notification.getType(),
-                                notification.getPostedOn()
+                                notification.getPostedOn(),
+                                null
                         ),
                         new Contact(
                             0,
@@ -218,7 +222,7 @@ public class UserService {
                     null,
                     null,
                     notification.getType(),
-                    notification.getPostedOn()
+                    notification.getPostedOn(), null
         ));
     }
 
@@ -296,6 +300,8 @@ public class UserService {
         return repo.getGroupMembers(id);
     }
 
+
+    @Transactional
     public void kickMember(String username, Long id, Long principalId, String principalUsername) {
         UserGroup ug = UGrepo.findById(new UserGroupId(id, principalId)).orElseThrow();
         Group g = Grepo.findById(id).orElseThrow();
@@ -305,7 +311,9 @@ public class UserService {
         }
 
         User kickedUser = repo.findByUsername(username);
-        UserGroup connection = UGrepo.findById(new UserGroupId(kickedUser.getId(), principalId)).orElseThrow();
+        kickedUser.setUnseenNotifications(kickedUser.getUnseenNotifications()+1);
+
+        UserGroup connection = UGrepo.findById(new UserGroupId(id,kickedUser.getId())).orElseThrow();
 
         Message m = new Message().builder()
                 .content(principalUsername+" kicked out "+username)
@@ -313,7 +321,155 @@ public class UserService {
                 .postedOn(LocalDateTime.now())
                 .build();
 
+        Mrepo.save(m);
+
+        g.setLatest(m);
+
+        GroupMessageDTO response = new GroupMessageDTO(
+                m.getContent(),
+                m.getPostedOn(),
+                null,
+                null,
+                null
+        );
+
+        Notification notification  = new Notification();
+        notification.setTypeId(3);
+        notification.setReceiver(kickedUser);
+        notification.setGroup(g);
+        notification.setType(NotificationType.GROUP_MESSAGE);
+        notification.setPostedOn(LocalDateTime.now());
+        Nrepo.save(notification);
+
+
+        int maxReached;
+        int maxPending;
+        boolean flag = false;
+
+        if(g.getMaxReached() > ug.getReached()){
+            ug.setReached(0);
+        }else{
+            ug.setReached(0);
+            maxReached = UGrepo.getMaxReached(id, kickedUser.getId());
+
+            if(maxReached < g.getMaxReached()){
+                flag = true;
+                g.setMaxReached(maxReached);
+            }
+        }
+
+
+        if(g.getMaxPending() > ug.getPending()){
+            ug.setPending(0);
+        }else{
+            ug.setPending(0);
+            maxPending = UGrepo.getMaxPending(id, kickedUser.getId());
+            if(maxPending < g.getMaxPending()){
+                flag = true;
+                g.setMaxPending(maxPending);
+            }
+        }
+
+        if(flag){
+            messagingTemplate.convertAndSend("/topic/group/"+id, new GroupWebsocketDTO(GroupWebsocketStatus.CHECK_MARK_UPDATE, null, id,g.getMaxPending(),g.getMaxReached()));
+        }
+
+        UGrepo.incrementPendingAndReached(principalId, id);
+        g.setMaxPending(g.getMaxPending()+1);
+        g.setMaxReached(g.getMaxReached()+1);
+
+
+
+
         UGrepo.delete(connection);
+
+
+
+        NotificationDTO notificationDTO = new NotificationDTO(
+                null,
+                null,
+                3,
+                g.getName(),
+                g.getProfileImg()!=null? g.getProfileImg().getFileName():null,
+                NotificationType.GROUP_MESSAGE,
+                notification.getPostedOn(),
+                id
+        );
+        messagingTemplate.convertAndSendToUser(username,"/queue/kickedOut",notificationDTO);
+        messagingTemplate.convertAndSend("/topic/group/"+id, new GroupWebsocketDTO(GroupWebsocketStatus.MESSAGE, response, id,0,0));
+
+
+
+
+    }
+
+    @Transactional
+    public void addMember(String username, long groupId, Long id, String username1) {
+
+        User addedMember = repo.findByUsername(username);
+        Group g = Grepo.findById(groupId).orElseThrow();
+
+        UserGroup ug = new UserGroup();
+        ug.setId(new UserGroupId(groupId, addedMember.getId()));
+        ug.setAdmin(false);
+        ug.setGroup(g);
+        ug.setUser(addedMember);
+
+        UGrepo.save(ug);
+
+        Message m = new Message().builder()
+                .content(username1+" added "+username)
+                .group(g)
+                .postedOn(LocalDateTime.now())
+                .build();
+
+        g.setLatest(m);
+
+        GroupMessageDTO response = new GroupMessageDTO(
+                m.getContent(),
+                m.getPostedOn(),
+                null,
+                null,
+                null
+        );
+
+        UGrepo.incrementPendingAndReached(id, groupId);
+        g.setMaxPending(g.getMaxPending()+1);
+        g.setMaxReached(g.getMaxReached()+1);
+
+        Notification notification  = new Notification();
+        notification.setTypeId(4);
+        notification.setReceiver(addedMember);
+        notification.setGroup(g);
+        notification.setType(NotificationType.GROUP_MESSAGE);
+        notification.setPostedOn(LocalDateTime.now());
+        Nrepo.save(notification);
+
+        NotificationDTO notificationDTO = new NotificationDTO(
+                null,
+                null,
+                3,
+                g.getName(),
+                g.getProfileImg()!=null? g.getProfileImg().getFileName():null,
+                NotificationType.GROUP_MESSAGE,
+                notification.getPostedOn(),
+                id
+        );
+
+        GroupDTO groupDTO = new GroupDTO(
+                g.getId(),
+                g.getName(),
+                0,
+                null,
+                g.getProfileImg()!=null? g.getProfileImg().getFileName(): null,
+                null,
+                null
+        );
+
+        messagingTemplate.convertAndSendToUser(username,"/queue/addedToGroup",new NewGroupDTO(notificationDTO, groupDTO));
+        messagingTemplate.convertAndSend("/topic/group/"+id, new GroupWebsocketDTO(GroupWebsocketStatus.MESSAGE, response, id,0,0));
+
+
 
     }
 }

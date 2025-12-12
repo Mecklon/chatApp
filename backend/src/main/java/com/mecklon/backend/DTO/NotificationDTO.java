@@ -18,4 +18,5 @@ public class NotificationDTO {
     private String groupProfile;
     private NotificationType type;
     private LocalDateTime postedOn;
+    private Long groupId;
 }

@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { clearConnections } from "../store/slices/connectionsSlice";
 import { clearChats } from "../store/slices/chatSlice";
 import { clearNotification } from "../store/slices/notificationsSlice";
+import { setExpanded } from "../store/slices/TileSlice";
 const DropDown = React.forwardRef((prop, ref) => {
   const { setUsername, setEmail, setProfile ,setCaption} = useAuthContext();
 
@@ -20,6 +21,7 @@ const DropDown = React.forwardRef((prop, ref) => {
     dispatch(clearConnections())
     dispatch(clearChats())
     dispatch(clearNotification())
+    dispatch(setExpanded(false))
     await api.get('/logout')
   };
 
@@ -42,11 +44,11 @@ const DropDown = React.forwardRef((prop, ref) => {
 
 
   return (
-    <div className="absolute w-40 top-full right-0 bg-red-500 " ref={ref}>
-      <div className="text-xl p-2 select-none cursor-pointer" onClick={handleLogout}>
+    <div className="absolute w-40 top-full right-0 border bg-bg-dark border-border rounded-lg text-text " ref={ref}>
+      <div className="text-xl hover:bg-bg-light p-2 select-none cursor-pointer" onClick={handleLogout}>
         Logout
       </div>
-      <div ref={triggerRef} className="text-xl p-2 select-none cursor-pointer" onClick={()=>setOpenProfileDetails(true)}>Profile Details</div>
+      <div ref={triggerRef} className="text-xl p-2 hover:bg-bg-light select-none cursor-pointer" onClick={()=>setOpenProfileDetails(true)}>Profile Details</div>
       {
         openProfileDetails &&
         

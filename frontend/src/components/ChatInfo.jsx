@@ -3,6 +3,8 @@ import Image from "../hooks/Image";
 import { normalizeTime } from "../normalizeTime";
 import { TbDotsVertical } from "react-icons/tb";
 import { setExpanded } from "../store/slices/TileSlice";
+import defaultAvatar from '../assets/defaultAvatar.webp'
+import defaultGroupAvatar from '../assets/defaultGroupAvatar.jpg'
 
 function ChatInfo() {
   const room = useSelector((store) => store.chat);
@@ -11,9 +13,9 @@ function ChatInfo() {
 
   if (room.isPrivate === false) {
     return (
-      <div className="flex gap-4 justify-baseline bg-red-600 items-center p-1">
+      <div className="flex gap-4 justify-baseline text-text items-center p-1">
         <div className="h-15 w-15 rounded-full overflow-hidden">
-          <Image path={room.grpInfo.profileImgName} className="h-full w-full" />
+          <Image path={room.grpInfo.profileImgName} fallback={defaultAvatar} className="h-full w-full" />
         </div>
 
         <div className="text-3xl font-bold">{room.grpInfo.name}</div>
@@ -28,9 +30,9 @@ function ChatInfo() {
   }
 
   return (
-    <div className="flex gap-4 justify-baseline bg-red-600 items-center p-1">
+    <div className="flex gap-4 justify-baseline text-text items-center p-1">
       <div className="h-15 w-15 rounded-full overflow-hidden">
-        <Image path={room.userInfo.profileImgName} className="h-full w-full" />
+        <Image path={room.userInfo.profileImgName} fallback={defaultGroupAvatar} className="h-full w-full" />
       </div>
 
       <div>

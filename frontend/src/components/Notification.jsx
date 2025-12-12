@@ -1,19 +1,19 @@
-
 import Image from "../hooks/Image";
 import { normalizeTime } from "../normalizeTime";
-import avatar from "../public/avatar.svg";
+import avatar from "../assets/defaultAvatar.webp";
+import groupAvatar from "../assets/defaultGroupAvatar.jpg";
 function Notification({ notification }) {
-  
+  console.log(notification);
   return (
-    <div className="p-2 flex gap-2 bg-red-600">
-      <div className="h-[50px] w-[50px] overflow-hidden rounded-full bg-orange-700 shrink-0">
+    <div className="p-2 border-t border-border flex gap-2 ">
+      <div className="h-[50px] w-[50px] overflow-hidden rounded-full shrink-0">
         <Image
           path={
             notification.senderProfile
               ? notification.senderProfile
               : notification.groupProfile
           }
-          fallback={avatar}
+          fallback={notification.groupid ? avatar : groupAvatar}
           className="h-full"
         />
       </div>
@@ -32,6 +32,11 @@ function Notification({ notification }) {
             <>
               <strong>{notification.senderName}</strong> has rejected your
               friend request
+            </>
+          )}
+          {notification.typeId === 3 && (
+            <>
+              You were kicked out of <strong>{notification.groupName}</strong>
             </>
           )}
         </div>

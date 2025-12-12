@@ -14,7 +14,7 @@ function ExpandableMedia({ media }) {
 
   return (
     <div
-      className={`border aspect-square bg-black flex items-center justify-center cursor-pointer overflow-auto ${
+      className={` aspect-square bg-black flex items-center justify-center cursor-pointer overflow-auto ${
         expanded && "fixed top-0 h-[100vh] right-0 w-[100vw] z-10"
       }`}
       onClick={handleClick}

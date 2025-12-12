@@ -22,15 +22,15 @@ function Friend({ connection }) {
   return (
     <div
       onClick={handleClick}
-      className="cursor-pointer flex px-3 py-2 gap-2 relative w-full items-center justify-center "
+      className="cursor-pointer bg-bg-light mb-1 rounded-lg  flex px-3 py-2 gap-2 relative w-full items-center justify-center "
     >
-      <div className="absolute right-1 top-1 text-xs">
+      <div className="absolute right-2 top-2 text-xs text-text">
         {normalizeTime(connection.postedOn)}
       </div>
       {connection.online && (
         <div className="h-3 w-3 bg-green-400 rounded-full absolute top-2 left-3"></div>
       )}
-      <div className="bg-red-600 h-15 w-15 shrink-0 rounded-full overflow-hidden">
+      <div className="bg-stone-600 h-15 w-15 shrink-0 rounded-full overflow-hidden">
         <Image
           path={connection.profileImgName}
           fallback={avatar}
@@ -38,8 +38,8 @@ function Friend({ connection }) {
         />
       </div>
       <div className="grow min-w-0">
-        <div className="text-ellipsis text-xl font-bold">{connection.name}</div>
-        <div className="text-ellipsis text-nowrap overflow-hidden text-sm flex items-center">
+        <div className="text-ellipsis text-xl font-bold text-text">{connection.name}</div>
+        <div className="text-ellipsis text-nowrap overflow-hidden text-sm flex items-center text-text">
           {connection.sender && connection.sender + " : "}
 
           {connection.content && connection.content }

@@ -17,7 +17,7 @@ function PrivateMessage({ message, isSeen, hasReached,scrollBottom }) {
           message.media.length === 0 ? "max-w-3/4" : " w-3/4"
         } self-end`}
       >
-        <div className="rounded-lg rounded-tr-none bg-blue-500 p-1.5 text-2xl">
+        <div className="rounded-lg rounded-tr-none text-text bg-messageSelf p-1.5 text-2xl">
           <div className="mb-2 break-all">{message.content}</div>
           {message.media.length != 0 && (
             <Multimedia scrollBottom={scrollBottom} media={message.media} preview={message.notsaved}></Multimedia>
@@ -33,7 +33,7 @@ function PrivateMessage({ message, isSeen, hasReached,scrollBottom }) {
           ) : (
             <IoCheckmark className=" text-2xl" />
           )}
-          <div>{normalizeTime(message.time)}</div>
+          <div className="text-text">{normalizeTime(message.time)}</div>
         </div>
       </div>
     );
@@ -43,13 +43,13 @@ function PrivateMessage({ message, isSeen, hasReached,scrollBottom }) {
     <div className={`${
           message.media.length === 0 ? "max-w-3/4 " : " w-3/4 "
         } self-start mt-1`}>
-      <div className="rounded-lg rounded-tl-none bg-red-500 p-1.5 text-2xl">
+      <div className="rounded-lg rounded-tl-none bg-messageReceived text-text p-1.5 text-2xl">
         <div className="mb-1 break-all">{message.content}</div>
         {message.media.length != 0 && (
           <Multimedia scrollBottom={scrollBottom} media={message.media} preview={message.notsaved}></Multimedia>
         )}
       </div>
-      <div className="text-sm">{normalizeTime(message.time)}</div>
+      <div className="text-sm text-text">{normalizeTime(message.time)}</div>
     </div>
   );
 }

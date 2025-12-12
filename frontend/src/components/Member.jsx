@@ -18,6 +18,7 @@ function Member({
   setMembers,
 }) {
   const { connectionSet } = useSelector((store) => store.connection);
+  const {grpInfo} = useSelector(store=>store.chat)
 
   const connectionSetRef = useRef(new Set());
 
@@ -36,7 +37,7 @@ function Member({
     setMembers((members) => {
       return members.filter((m) => m.username !== member.username);
     });
-    await fetch("/KickMember/"+member.username);
+    await fetch("/KickMember/"+member.username+"/"+grpInfo.id);
   };
 
   const { username } = useAuthContext();
@@ -44,7 +45,7 @@ function Member({
   const [confirmation, setConfirmation] = useState(false);
   return (
     <div
-      className={`bg-red-500 p-2 flex gap-2 rounded-sm items-center relative ${
+      className={`bg-bg-light p-2 flex gap-2 rounded-sm items-center relative ${
         openMenu && "z-10"
       }`}
     >
@@ -83,10 +84,10 @@ function Member({
         </div>
       )}
       {openMenu && (
-        <div className="bg-black text-white userGroupMenu absolute right-0 top-[70%] rounded-sm">
+        <div className="bg-bg-dark text-text border border-border userGroupMenu absolute right-0 top-[70%] rounded-sm">
           {isAdmin && !member.admin && (
             <div
-              className="p-1 px-3  cursor-pointer hover:bg-stone-800"
+              className="p-1  px-3  cursor-pointer hover:bg-bg"
               onClick={() => setConfirmation(true)}
             >
               Kick member
@@ -94,7 +95,7 @@ function Member({
           )}
           {connectionSetRef.current.has(member.username) ? (
             <div
-              className="p-1 px-3 cursor-pointer hover:bg-stone-800"
+              className="p-1 px-3 cursor-pointer hover:bg-bg"
               onClick={() => {
                 dispatch(setFriendRoom(member.username));
                 dispatch(setExpanded(false));
@@ -103,14 +104,14 @@ function Member({
               Message
             </div>
           ) : (
-            <div className="p-1 px-3 cursor-pointer hover:bg-stone-800">
+            <div className="p-1 px-3 cursor-pointer hover:bg-bg">
               Send Friend Request
             </div>
           )}
         </div>
       )}
       {confirmation && (
-        <ConfirmationBox setExpanded={setConfirmation} handleYes={handleYes} />
+        <ConfirmationBox message={"Kick "+member.username+" out of "+grpInfo.name} setExpanded={setConfirmation} handleYes={handleYes} />
       )}
     </div>
   );

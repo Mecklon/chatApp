@@ -125,14 +125,14 @@ function MessageInput() {
   return (
     <form
       onSubmit={handleSendMessage}
-      className="bg-teal-600 flex gap-1 items-baseline relative"
+      className="flex gap-1 items-baseline relative"
     >
       <div className="absolute bottom-full flex gap-1  mb-1 overflow-auto w-full customScroll thinTrack">
         {files.map((file, index) => {
           return (
             <div
               key={file.frontEndObj}
-              className="shrink-0 relative h-20 w-20 rounded-lg overflow-hidden border border-stone-700"
+              className="shrink-0 relative h-20 w-20 rounded-lg overflow-hidden border border-border"
             >
               {file.file.type.split("/")[0] === "image" ? (
                 <img className="h-full w-full object-contain bg-black" src={file.frontEndObj} />
@@ -148,14 +148,16 @@ function MessageInput() {
         })}
       </div>
       <input
+      
         id="fileInput"
         onChange={handleFileInput}
         ref={fileInputRef}
         type="file"
         className="hidden"
+
         multiple
       />
-      <div className="bg-stone-700 items-end  p-3 grow flex gap-2 rounded-4xl ">
+      <div className="bg-bg-light border border-border text-text  items-end  p-3 grow flex gap-2 rounded-4xl ">
         <label htmlFor="fileInput">
           <GoPaperclip className="text-3xl cursor-pointer" />
         </label>
@@ -167,7 +169,7 @@ function MessageInput() {
           className="grow customScroll outline-0 text-2xl resize-none"
         />
       </div>
-      <button className="flex items-center justify-center h-13 w-13 bg-red-500 rounded-full cursor-pointer">
+      <button className="flex items-center justify-center h-13 w-13 bg-secondary text-text rounded-full cursor-pointer">
         <RiSendPlaneFill className="text-3xl " />
       </button>
     </form>

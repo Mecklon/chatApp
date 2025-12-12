@@ -24,7 +24,8 @@ public interface NotificationRepo extends JpaRepository<Notification, Long> {
              g.name,
              g.profileImg.fileName,
              n.type,
-             n.postedOn)
+             n.postedOn,
+             null)
              from Notification n
              left join n.sender s
              left join n.group g

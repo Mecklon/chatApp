@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit";
 import api from "../../api/api";
 import { SiTaketwointeractivesoftware } from "react-icons/si";
+import { setExpanded } from "./TileSlice";
 
 export const sendMessage = createAsyncThunk(
   "chat/sendMessage",
@@ -44,6 +45,17 @@ export const sendGroupSeen = createAsyncThunk(
     await api.post("/sendGroupSeen/" + groupId);
   }
 );
+
+export const closeDeletedChat = createAsyncThunk(
+  "chat/closeDeletedChat",
+  async(id, {getState, dispatch})=>{
+    const {chat} = getState();
+    if(chat.isPrivate || chat.grpInfo.id != id)return;
+    dispatch(clearChats())
+    dispatch(setExpanded(false))
+
+  }
+)
 
 export const setFriendRoom = createAsyncThunk(
   "chat/setFriendRoom",

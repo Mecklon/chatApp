@@ -59,13 +59,13 @@ function Contacts() {
   }, []);
 
   return (
-    <div className="bg-amber-950 [grid-area:sideBar] py-1 flex flex-col h-full min-h-0">
-      <div className="p-1 mx-1 bg-red-400 rounded-lg flex gap-2 items-center">
-        <HiMagnifyingGlass className="text-4xl px-1" />
+    <div className="bg-bg rounded-xl border border-border [grid-area:sideBar] p-2 flex flex-col h-full min-h-0">
+      <div className="p-1 mx-1 bg-bg-light rounded-lg flex gap-2 items-center">
+        <HiMagnifyingGlass className="text-4xl px-1 text-text" />
         <input
           type="text"
           ref={inputRef}
-          className="grow-1 outline-0"
+          className="grow-1 outline-0 text-text"
           onKeyUp={handleSearch}
           placeholder="Find someone new"
         />

@@ -41,9 +41,9 @@ function ConnectionInfoTab() {
   const [visual, setVisual] = useState(true);
 
   return (
-    <div className="bg-amber-950 [grid-area:info] p-3 relative flex flex-col min-h-0">
+    <div className="bg-bg border border-border text-text rounded-xl [grid-area:info] p-3 relative flex flex-col min-h-0">
       <RxCross1
-        className="absolute right-3"
+        className="absolute right-3 cursor-pointer text-text duration-300 hover:scale-125"
         onClick={() => dispatch(setExpanded(false))}
       />
 
@@ -54,7 +54,7 @@ function ConnectionInfoTab() {
       />
       <div className="text-center font-bold text-2xl">{userInfo.name}</div>
       <div className="text-center">{caption}</div>
-      <div className="flex mt-2">
+      <div className="flex mt-3">
         <div
           onClick={() => setVisual(true)}
           className={`${

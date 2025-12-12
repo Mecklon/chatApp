@@ -8,6 +8,8 @@ import { MdMail } from "react-icons/md";
 import { IoPersonAddSharp } from "react-icons/io5";
 import Requests from "./Requests";
 import Notifications from "./Notifications";
+import { MdSunny } from "react-icons/md";
+import { IoMdMoon } from "react-icons/io";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,6 +25,12 @@ function Header() {
   const notificationTrigger = useRef();
 
   const { unseenRequests, unseenNotifications } = useAuthContext();
+
+  const [theme, setTheme] = useState(() => {
+    const theme = localStorage.getItem("theme");
+    if (theme === null && theme === "false") return false;
+    return true;
+  });
 
   const { username, profile } = useAuthContext();
   useEffect(() => {
@@ -70,13 +78,30 @@ function Header() {
   }, []);
 
   return (
-    <div className="bg-amber-950 [grid-area:header] flex 
-    z-10 items-center justify-between p-1 relative">
-      <div className="flex gap-1 items-center p-1 text-2xl font-bold text-primary">
-        <PiGraphLight className="text-5xl text-primary" />
+    <div
+      className=" [grid-area:header] flex 
+    z-10 items-center justify-between p-1 relative"
+    >
+      <div className="flex gap-1 items-center p-1 text-2xl font-bold text-text">
+        <PiGraphLight className="text-5xl text-text" />
         Uni Talk
       </div>
-      <div className="h-full flex gap-4 items-center">
+      <div className="h-full flex gap-4 items-center text-text cursor-pointer text-3xl">
+        <div
+          onClick={(e) => {
+            if (document.documentElement.classList.contains("dark")) {
+              localStorage.setItem("theme", false);
+              document.documentElement.classList.remove("dark");
+              setTheme(false);
+            } else {
+              localStorage.setItem("theme", true);
+              document.documentElement.classList.add("dark");
+              setTheme(true);
+            }
+          }}
+        >
+          {theme ? <MdSunny /> : <IoMdMoon />}
+        </div>
         <div className="relative ">
           {requestIsOpen && <Requests state={[]} ref={requestRef} />}
           {unseenRequests != 0 && (
@@ -92,14 +117,20 @@ function Header() {
           />
         </div>
         <div className="relative">
-          {notificationIsOpen && <Notifications state={[]} ref={notificationRef}/>}
+          {notificationIsOpen && (
+            <Notifications state={[]} ref={notificationRef} />
+          )}
           {unseenNotifications != 0 && (
             <div className="absolute bg-red-600 flex items-center rounded-full justify-center text-white h-5 w-5 z-0 bottom-3/4 right-3/4">
               {unseenNotifications}
             </div>
           )}
 
-          <MdMail ref={notificationTrigger} onClick={()=>setNotificationIsOpen(true)} className="text-3xl hover:scale-110 duration-200 cursor-pointer" />
+          <MdMail
+            ref={notificationTrigger}
+            onClick={() => setNotificationIsOpen(true)}
+            className="text-3xl hover:scale-110 duration-200 cursor-pointer"
+          />
         </div>
         <div
           className="cursor-pointer flex gap-2 h-full items-center"

@@ -165,7 +165,20 @@ public class ConnectionsController {
             us.kickMember(username,groupId,principal.getId(), principal.getUsername());
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
 
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/addMember/{groupId}/{username}")
+    public ResponseEntity<Void> addMember(@PathVariable("username") String username,@PathVariable("groupId") long groupId, @AuthenticationPrincipal UserPrincipal principal){
+        try{
+
+            us.addMember(username,groupId,principal.getId(), principal.getUsername());
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

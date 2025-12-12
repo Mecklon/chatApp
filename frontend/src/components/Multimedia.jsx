@@ -69,6 +69,7 @@ function Multimedia({ media, preview, scrollBottom }) {
             key={m.id}
             fileName={m.fileName}
             fileType={m.fileType}
+            
           />
         );
       })}

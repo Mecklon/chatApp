@@ -44,7 +44,7 @@ function Messages() {
   return (
     <div
       ref={chatRef}
-      className="grow mx-1 flex flex-col gap-2 customScroll overflow-auto thinTrack"
+      className="grow mx-1 flex flex-col gap-2 customScroll overflow-auto thinTrack pr-2"
     >
       {chatInfo.isPrivate &&
         chatInfo.chats.map((message, index) => {

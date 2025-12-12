@@ -1,21 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #f0f0f0;
-  --color-primary: #1c1917;
   --color-secondary: #163bc0;
   --color-secondaryHover: #102a79;
-  --color-inputBackground: #cacaca;
-  --color-borderColor: #4a5565;
+
+  --color-bg-dark: oklch(0.92 0 240);
+  --color-bg: oklch(0.96 0 240);
+  --color-bg-light: oklch(1 0 240);
+  --color-text: oklch(0.15 0 240);
+  --color-border: oklch(0.6 0 240);
+  --color-messageSelf: #163bc0;
+  --color-messageReceived: #163bc0;
 }
 
 .dark {
-  --color-background: #131313;
-  --color-primary: white;
   --color-secondary: #163bc0;
   --color-secondaryHover: #102a79;
-  --color-inputBackground: #1a1a1a;
-  --color-borderColor: #4a5565;
+
+  --color-bg-dark: oklch(0.1 0 240);
+  --color-bg: oklch(0.15 0 240);
+  --color-bg-light: oklch(0.2 0 240);
+  --color-text: oklch(0.96 0 240);
+  --color-border: oklch(0.4 0 240);
+  --color-messageSelf: #163bc0;
+  --color-messageReceived: #081544;
+  
 }
 
 body {
@@ -27,7 +36,7 @@ body {
   --customToggleHeight: 30px;
 }
 #root {
-  background-color: var(--color-background);
+  background-color: var(--color-bg-dark);
   /* background-color: #cacaca; */
   display: flex;
   justify-content: center;
@@ -42,7 +51,6 @@ textarea::-webkit-scrollbar {
 .scroll::-webkit-scrollbar {
   background-color: transparent;
   width: 10px;
-  
 }
 .scroll::-webkit-scrollbar-thumb {
   background-color: grey;
@@ -59,65 +67,60 @@ textarea::-webkit-scrollbar {
 .customScroll::-webkit-scrollbar-thumb:hover {
   background-color: grey;
 }
-.thinTrack::-webkit-scrollbar{
+.thinTrack::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 
-
-
-
-.customToggle{
-    position: relative;
-    height: 10px;
-    width: 60px;
+.customToggle {
+  position: relative;
+  height: 10px;
+  width: 60px;
 }
-.customToggle::before{
-    content: "";
-    position: absolute;
-    transform: translateY(-25% );
-    height: var(--customToggleHeight);
-    width: calc( var(--customToggleHeight) * 2 );
-    border-radius: var(--customToggleHeight);
-    background-color: grey;
-    transition:all 0.4s;
-    
-  }
-  .customToggle:checked::before{
-    background-color: rgb(76, 179, 240);
-  }
-  .customToggle::after{
-    content: "";
-    transform: translateY(-27% );
-    position: absolute;
-    height: calc( var(--customToggleHeight) * 0.85);
-    width: calc( var(--customToggleHeight) * 0.85);
-    left: calc( var(--customToggleHeight) * 0.0725);
-    top:calc( var(--customToggleHeight) * 0.0725);
-    border-radius: var(--customToggleHeight);
-    background-color: white;
-    transition:all 0.2s ease-in-out;
-    
-  }
-  .customToggle:checked::after{
-    transform: translateX(calc(var(--customToggleHeight) * 0.975)) translateY(-27% );
+.customToggle::before {
+  content: "";
+  position: absolute;
+  transform: translateY(-25%);
+  height: var(--customToggleHeight);
+  width: calc(var(--customToggleHeight) * 2);
+  border-radius: var(--customToggleHeight);
+  background-color: grey;
+  transition: all 0.4s;
+}
+.customToggle:checked::before {
+  background-color: rgb(76, 179, 240);
+}
+.customToggle::after {
+  content: "";
+  transform: translateY(-27%);
+  position: absolute;
+  height: calc(var(--customToggleHeight) * 0.85);
+  width: calc(var(--customToggleHeight) * 0.85);
+  left: calc(var(--customToggleHeight) * 0.0725);
+  top: calc(var(--customToggleHeight) * 0.0725);
+  border-radius: var(--customToggleHeight);
+  background-color: white;
+  transition: all 0.2s ease-in-out;
+}
+.customToggle:checked::after {
+  transform: translateX(calc(var(--customToggleHeight) * 0.975))
+    translateY(-27%);
 }
 
-
-.checkBlue:has(input:checked){
+.checkBlue:has(input:checked) {
   background-color: rgb(167, 211, 252);
 }
 
-.customBorder{
+.customBorder {
   position: relative;
 }
-.customBorder::before{
+.customBorder::before {
   content: "";
   position: absolute;
   left: 0;
   display: block;
-  background-color: yellow;
+  background-color: var(--color-secondary);
   height: 3px;
   top: 0;
-  right: 0
+  right: 0;
 }

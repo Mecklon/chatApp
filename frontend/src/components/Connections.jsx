@@ -25,11 +25,11 @@ function Connections() {
         className="text-2xl font-bold p-2 flex items-center justify-between"
         onClick={() => setOpenConversations((prev) => !prev)}
       >
-        <div>Converstions</div>
+        <div className="text-text">Converstions</div>
         <FaChevronUp
           className={`${
             openConversations && "rotate-180"
-          } text-xl duration-300 hover:scale-140`}
+          } text-xl duration-300 hover:scale-140 text-text`}
         />
       </div>
       {openConversations && (
@@ -43,17 +43,17 @@ function Connections() {
         className="text-2xl font-bold p-2 flex items-center justify-between"
         onClick={() => setOpenGroups((prev) => !prev)}
       >
-        <div>Groups</div>
+        <div className="text-text">Groups</div>
         <div className="flex gap-1">
           <FaPlus
             onClick={openCreateGroup}
-            className={`-xl duration-300 hover:scale-140`}
+            className={`-xl duration-300 hover:scale-140 text-text`}
           />
 
           <FaChevronUp
             className={`${
               openGroups && "rotate-180"
-            } text-xl duration-300 hover:scale-140`}
+            } text-xl duration-300 hover:scale-140 text-text`}
           />
         </div>
       </div>

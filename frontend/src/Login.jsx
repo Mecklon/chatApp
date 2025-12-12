@@ -43,34 +43,31 @@ let Login = () => {
     <form
       action=""
       onSubmit={handleSubmit}
-      className="w-[90%] max-w-[500px] p-10 bg-background border border-borderColor mt-10 rounded-2xl shadow-2xl"
+      className="w-[90%] max-w-[500px] p-10 bg-bg border border-border mt-10 rounded-2xl shadow-2xl"
     >
-      <button className="p-2 rounded bg-background text-primary border-borderColor border cursor-pointer" onClick={(e)=>{
-        e.preventDefault()
-        document.documentElement.classList.toggle("dark")
-      }}>theme</button>
-      <h1 className="text-2xl mb-5 flex gap-1 items-center text-primary">
-        <PiGraphLight className="text-5xl text-primary" />
+     
+      <h1 className="text-2xl mb-5 flex gap-1 items-center text-text">
+        <PiGraphLight className="text-5xl text-text" />
         Uni Talk
       </h1>
-      <h1 className="text-4xl font-bold mb-3 text-primary">Welcome Back!!</h1>
+      <h1 className="text-4xl font-bold mb-3 text-text">Welcome Back!!</h1>
       <label htmlFor="email">
-        <div className="text-2xl mt-2 text-primary">Username: </div>
+        <div className="text-2xl mt-2 text-text">Username: </div>
         <input
           autoFocus
           ref={usernameRef}
           required
-          className="mt-2 text-gray-600 text-xl p-2 bg-inputBackground w-[100%] rounded border-1 outline-none focus:ring-blue-400 focus:ring-2 duration-150"
+          className="mt-2 text-text text-xl p-2 bg-bg-light w-[100%] rounded border-1 outline-none focus:ring-blue-400 focus:ring-2 duration-150 border-border"
           type="text"
           id="email"
         />
       </label>
       <label htmlFor="password">
-        <div className="text-2xl mt-2 text-primary">Password: </div>
+        <div className="text-2xl mt-2 text-text">Password: </div>
         <input
           ref={password}
           required
-          className="mt-2 text-gray-600 text-xl p-2 bg-inputBackground w-[100%] rounded border-1 outline-none focus:ring-blue-400 focus:ring-2 duration-150"
+          className="mt-2 text-text text-xl p-2 bg-bg-light w-[100%] rounded border-border border-1 outline-none focus:ring-blue-400 focus:ring-2 duration-150"
           type="password"
           id="password"
         />

@@ -6,6 +6,7 @@ import {
   addConnection,
   addGroup,
   addRequest,
+  deleteGroup,
   incrementGroupUnseen,
   incrementUnseen,
   setActivityStatus,
@@ -18,6 +19,7 @@ import { createContext, useEffect, useRef, useState } from "react";
 import {
   addGroupMessage,
   addReceivedMessage,
+  closeDeletedChat,
   sendGroupReceived,
   sendGroupSeen,
   setChatActivityStatus,
@@ -120,6 +122,22 @@ const WebSocketProvider = ({ children }) => {
         const body = JSON.parse(payload.body);
         dispatch(addGroup(body));
       });
+      client.subscribe("/user/queue/kickedOut", (payload) => {
+        const body = JSON.parse(payload.body);
+
+        console.log(body)
+        dispatch(deleteGroup(body.groupId));
+        dispatch(closeDeletedChat(body.groupId));
+        setUnseenNotifications((prev) => prev + 1);
+        dispatch(addNotification(body))
+      });
+
+      client.subscribe("/user/queue/addedToGroup",payload=>{
+        const body = JSON.parse(payload.body)
+        dispatch(addGroup(body.group))
+        setUnseenNotifications((prev) => prev + 1);
+        dispatch(addNotification(body.notification))
+      })
     };
     client.onDisconnect = () => {
       console.log("❌ Disconnected from WebSocket");

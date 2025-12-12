@@ -42,40 +42,40 @@ function Signup() {
     <form
       onSubmit={handleSubmit}
       action=""
-      className="w-[90%] max-w-[500px] p-10 bg-background border border-borderColor mt-10 rounded-2xl shadow-2xl"
+      className="w-[90%] max-w-[500px] p-10 bg-bg border border-border mt-10 rounded-2xl shadow-2xl"
     >
-      <h1 className="text-2xl mb-5 flex gap-1 items-center text-primary">
-        <PiGraphLight className="text-5xl text-primary" />
+      <h1 className="text-2xl mb-5 flex gap-1 items-center text-text">
+        <PiGraphLight className="text-5xl text-text" />
         Uni Talk
       </h1>
-      <h1 className="text-4xl  font-bold mb-3 text-primary">Signup To Talk</h1>
+      <h1 className="text-4xl  font-bold mb-3 text-text">Signup To Talk</h1>
       <label htmlFor="name">
-        <div className="text-2xl text-primary">Username: </div>
+        <div className="text-2xl text-text">Username: </div>
         <input
           autoFocus
           ref={name}
           required
-          className="mt-2 text-gray-600 text-xl p-2 bg-inputBackground border-1 w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
+          className="mt-2 text-text text-xl p-2 bg-bg-light border-1 w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
           type="text"
           id="name"
         />
       </label>
       <label htmlFor="email">
-        <div className="text-2xl mt-2 text-primary">Email: </div>
+        <div className="text-2xl mt-2 text-text">Email: </div>
         <input
           ref={email}
           required
-          className="mt-2 text-gray-600 border-1 text-xl p-2 bg-inputBackground w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
+          className="mt-2 text-text border-1 text-xl p-2 bg-bg-light w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
           type="text"
           id="email"
         />
       </label>
       <label htmlFor="password">
-        <div className=" text-2xl mt-2 text-primary">Password: </div>
+        <div className=" text-2xl mt-2 text-text">Password: </div>
         <input
           ref={password}
           required
-          className="mt-2 text-gray-600 text-xl p-2 bg-inputBackground border-1 w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
+          className="mt-2 text-text text-xl p-2 bg-bg-light border-1 w-[100%] rounded outline-none focus:ring-blue-400 focus:ring-2 duration-150"
           type="password"
           id="password"
         />

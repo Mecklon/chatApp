@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import defaultGroupAvatar from "../assets/defaultGroupAvatar.jpg";
-
+import NonMember from "./NonMember";
 import { useDispatch, useSelector } from "react-redux";
 import { RxCross1 } from "react-icons/rx";
 import { setExpanded } from "../store/slices/TileSlice";
@@ -16,6 +16,9 @@ function GroupInfoTab() {
   const dispatch = useDispatch();
 
   const { grpInfo } = useSelector((store) => store.chat);
+  const { connectionSet, connections } = useSelector(
+    (store) => store.connection
+  );
 
   const { fetch } = useGetFetch();
 
@@ -62,25 +65,24 @@ function GroupInfoTab() {
 
     getInfoData();
   }, [grpInfo.id]);
-  
 
-  const memberSet = useRef(new Set());
+  const [memberSet, setMemberSet] = useState(new Set());
   useEffect(() => {
-    members.forEach((member) => memberSet.current.add(member.username));
+    setMemberSet(new Set(members.map((member) => member.username)));
   }, [members]);
 
-
-  
+   console.log(connections);
+  console.log(members)
 
   const [tab, setTab] = useState(1);
 
   return (
-    <div className="bg-amber-950 [grid-area:info] p-3 relative flex flex-col min-h-0">
+    <div className="bg-bg border border-border text-text rounded-xl [grid-area:info] p-3 relative flex flex-col min-h-0">
       <RxCross1
-        className="absolute right-3"
+        className="absolute right-3 text-text duration-300 hover:scale-125 cursor-pointer"
         onClick={() => dispatch(setExpanded(false))}
       />
-   
+
       <Image
         path={grpInfo.profileImgName}
         fallback={avatar}
@@ -116,11 +118,32 @@ function GroupInfoTab() {
         </div>
       </div>
       {tab === 1 && (
-        <div className="flex flex-col grow gap-2 min-h-0 overflow-auto customScroll">
-          {members.map((member,index) => (
-            <Member key={index} index={index} member={member} isAdmin={isAdmin} setMembers={setMembers} setActiveMenuIndex={setActiveMenuIndex} openMenu={activeMenuIndex === index}/>
-          ))}
-        </div>
+        <>
+          <div className="flex flex-col grow gap-2 min-h-0 overflow-auto customScroll">
+            {members.map((member, index) => (
+              <Member
+                key={index}
+                index={index}
+                member={member}
+                isAdmin={isAdmin}
+                setMembers={setMembers}
+                setActiveMenuIndex={setActiveMenuIndex}
+                openMenu={activeMenuIndex === index}
+              />
+            ))}
+            {isAdmin && (
+              <>
+                <div>Add Friends</div>
+                {connections.map((connection) => {
+                  if (memberSet.has(connection.name)) return null;
+                  return (
+                    <NonMember grpId={grpInfo.id} grpName={grpInfo.name} setMembers={setMembers} key={connection.id} connection={connection} />
+                  );
+                })}
+              </>
+            )}
+          </div>
+        </>
       )}
       {tab === 2 && (
         <div className="grid grid-cols-3 w-full overflow-auto customScroll">

@@ -48,9 +48,9 @@ const File = ({ path = null, fileName = "file", fileType = null }) => {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="text-sm flex gap-2 bg-stone-600 p-2 rounded-sm items-center cursor-auto"
+      className="text-sm flex gap-2 text-text bg-bg-light p-2 rounded-sm items-center cursor-auto"
     >
-      <div className="bg-stone-800 rounded-full h-17 w-17 shrink-0 p-3">
+      <div className=" rounded-full h-17 w-17 shrink-0 p-3">
         {fileType === "application/pdf" ? (
           <img src={pdf} className="h-full" />
         ) : fileType === "text/plain" ? (
@@ -63,7 +63,7 @@ const File = ({ path = null, fileName = "file", fileType = null }) => {
         )}
       </div>
       <div className="grow break-all">Download {fileName}</div>
-      <a href={src} download={fileName} id={`link-${fileName}`}>
+      <a  href={src} download={fileName} id={`link-${fileName}`}>
         <div
           htmlFor={`link-${fileName}`}
           className="hover:bg-[rgba(0,0,0,0.5)] duration-200 cursor-pointer p-4 rounded-full shrink-0"

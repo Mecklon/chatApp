@@ -42,7 +42,8 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY)
     Connection connection;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false)
+
+    // changes to nullable to store system messages
+    @ManyToOne(fetch = FetchType.LAZY)
     User user;
 }

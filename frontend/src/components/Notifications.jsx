@@ -52,7 +52,7 @@ const Notifications = forwardRef(({ state }, ref) => {
   return (
     <div
       ref={ref}
-      className="top-full bg-stone-800 text-white absolute w-[500px] -translate-x-1/2 [max-height:700px] overflow-auto customScroll"
+      className="top-full bg-bg-dark rounded-xl border text-text border-border absolute w-[500px] -translate-x-1/2 [max-height:700px] overflow-auto customScroll"
     >
       {notifications.map(notification=>{
         return < Notification key={notification.id} notification={notification}/>

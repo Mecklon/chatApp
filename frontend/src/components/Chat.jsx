@@ -16,7 +16,7 @@ function Chat() {
 
 
   return (
-    <div className="bg-red-300 [grid-area:main] flex flex-col h-full min-h-0">
+    <div className=" [grid-area:main] flex flex-col h-full min-h-0">
       <ChatInfo />
       <Messages />
       <MessageInput />

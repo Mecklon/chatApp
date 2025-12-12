@@ -131,7 +131,7 @@ public class ChatService {
                                         media.getFileName(),
                                         media.getFileType()))
                                         .toList() ,
-                mess.getUser().getUsername(),
+                mess.getUser()!=null? mess.getUser().getUsername():null,
                 null
         );
 
@@ -286,8 +286,8 @@ public class ChatService {
                                                                 media.getFileType()
                                                         )
                                                 ).toList(),
-                                message.getUser().getUsername(),
-                                message.getUser().getProfileImg().getFileName()
+                                message.getUser()!=null? message.getUser().getUsername():null,
+                                message.getUser()!=null? message.getUser().getProfileImg().getFileName():null
                         )
                 ).toList();
 

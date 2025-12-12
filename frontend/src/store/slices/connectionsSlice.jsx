@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit";
 import api from "../../api/api";
+import { SiTaketwointeractivesoftware } from "react-icons/si";
 
 const initialState = {
   connections: [],
@@ -127,6 +128,11 @@ const connectionsSlice = createSlice({
     clearConnections: () => {
       return initialState;
     },
+    deleteGroup:(state, action)=>{
+      const id = action.payload
+      state.groups = state.groups.filter(group=> group.id!=id)
+    }
+   
   },
   extraReducers: (builder) => {
     builder
@@ -212,5 +218,7 @@ export const {
   addGroup,
   incrementGroupUnseen,
   clearConnections,
+  deleteGroup
+  
 } = connectionsSlice.actions;
 export default connectionsSlice.reducer;
