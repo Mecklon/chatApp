@@ -52,7 +52,7 @@ const Requests = forwardRef(({ state }, ref) => {
   return (
     <div
       ref={ref}
-      className="w-[400px] h-max-[600px] bg-stone-700 absolute top-full right-0 overflow-auto customScroll"
+      className="w-[400px] h-max-[600px] bg-bg-dark rounded-xl border border-border absolute top-full right-0 overflow-auto customScroll"
     >
       {
         requests.map(request=>{

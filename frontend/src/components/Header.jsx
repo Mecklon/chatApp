@@ -105,7 +105,7 @@ function Header() {
         <div className="relative ">
           {requestIsOpen && <Requests state={[]} ref={requestRef} />}
           {unseenRequests != 0 && (
-            <div className="absolute bg-red-600 flex items-center rounded-full justify-center text-white h-5 w-5 z-0 bottom-3/4 right-3/4">
+            <div className="absolute bg-red-600 text-sm flex items-center rounded-full justify-center text-white h-5 w-5 z-0 bottom-3/4 right-3/4">
               {unseenRequests}
             </div>
           )}
@@ -121,7 +121,7 @@ function Header() {
             <Notifications state={[]} ref={notificationRef} />
           )}
           {unseenNotifications != 0 && (
-            <div className="absolute bg-red-600 flex items-center rounded-full justify-center text-white h-5 w-5 z-0 bottom-3/4 right-3/4">
+            <div className="absolute bg-red-600 text-sm flex items-center rounded-full justify-center text-white h-5 w-5 z-0 bottom-3/4 right-3/4">
               {unseenNotifications}
             </div>
           )}

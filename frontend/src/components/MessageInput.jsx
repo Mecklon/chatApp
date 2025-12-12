@@ -6,6 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMessage, sendMessage } from "../store/slices/chatSlice";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { nanoid } from "@reduxjs/toolkit";
+import { FaMusic } from "react-icons/fa6";
+import pdf from "../assets/pdf.png";
+import powerpoint from "../assets/powerpoint.png";
+import excel from "../assets/excel.png";
+import word from "../assets/word.png";
+import useWebSocketContext from "../hooks/useWebsocketContext";
 import {
   updateLatestMessage,
   updateLatestGroupMessage,
@@ -23,7 +29,6 @@ function MessageInput() {
   const dispatch = useDispatch();
 
   const handleFileInput = () => {
-    console.log("changing");
     const newFiles = Array.from(fileInputRef.current.files);
     setFiles((prev) => {
       return [
@@ -34,6 +39,26 @@ function MessageInput() {
           frontEndObj: URL.createObjectURL(file),
         })),
       ];
+    });
+  };
+
+  const { client } = useWebSocketContext();
+  const handleType = () => {
+    let body;
+    if (chatInfo.isPrivate) {
+      body = {
+        receiver: chatInfo.userInfo.name,
+        private: true,
+      };
+    } else {
+      body = {
+        receiver: chatInfo.grpInfo.id,
+        private: false,
+      };
+    }
+    client.publish({
+      destination: "/app/chat/typing",
+      body: JSON.stringify(body),
     });
   };
 
@@ -122,12 +147,17 @@ function MessageInput() {
     setFiles([]);
     handleOverflow(e);
   };
+
+  useEffect(() => {
+    textInputRef.current.value = "";
+  }, [chatInfo.userInfo, chatInfo.grpInfo]);
+
   return (
     <form
       onSubmit={handleSendMessage}
-      className="flex gap-1 items-baseline relative"
+      className="flex gap-1 items-baseline relative z-10 shrink-0"
     >
-      <div className="absolute bottom-full flex gap-1  mb-1 overflow-auto w-full customScroll thinTrack">
+      <div className="absolute bottom-full flex gap-1  mb-1  w-full customScroll thinTrack  shrink-0">
         {files.map((file, index) => {
           return (
             <div
@@ -135,9 +165,37 @@ function MessageInput() {
               className="shrink-0 relative h-20 w-20 rounded-lg overflow-hidden border border-border"
             >
               {file.file.type.split("/")[0] === "image" ? (
-                <img className="h-full w-full object-contain bg-black" src={file.frontEndObj} />
+                <img
+                  className="h-full w-full object-contain bg-black"
+                  src={file.frontEndObj}
+                />
+              ) : file.file.type.split("/")[0] === "video" ? (
+                <video
+                  className="h-full w-full object-contain bg-black"
+                  src={file.frontEndObj}
+                />
+              ) : file.file.type === "application/pdf" ? (
+                <div className="bg-black h-full w-full">
+                  <img src={pdf} alt="" />
+                </div>
+              ) : file.file.type === "text/plain" ? (
+                <div className="bg-black h-full w-full flex items-center justify-center">
+                  <img src={word} className="h-[90%]" alt="" />
+                </div>
+              ) : file.file.type ===
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? (
+                <div className="bg-black h-full w-full flex items-center justify-center">
+                  <img src={excel} className="h-[90%]" alt="" />
+                </div>
+              ) : file.file.type ===
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation" ? (
+                <div className="bg-black h-full w-full flex items-center justify-center">
+                  <img src={powerpoint} className="h-[90%]" alt="" />
+                </div>
               ) : (
-                <video className="h-full w-full object-contain bg-black" src={file.frontEndObj} />
+                <div className="bg-black h-full w-full flex items-center justify-center">
+                  <FaMusic className="text-white text-2xl" />
+                </div>
               )}
               <RxCross1
                 onClick={() => handleRemoveFile(index)}
@@ -148,22 +206,23 @@ function MessageInput() {
         })}
       </div>
       <input
-      
         id="fileInput"
         onChange={handleFileInput}
         ref={fileInputRef}
         type="file"
         className="hidden"
-
         multiple
       />
-      <div className="bg-bg-light border border-border text-text  items-end  p-3 grow flex gap-2 rounded-4xl ">
+      <div className="bg-bg-light border border-border text-text  items-end shrink-0 p-3 grow flex gap-2 rounded-4xl ">
         <label htmlFor="fileInput">
-          <GoPaperclip className="text-3xl cursor-pointer" />
+          <GoPaperclip className="text-3xl cursor-pointer hover:scale-125 duration-300" />
         </label>
         <textarea
           rows={1}
-          onChange={handleOverflow}
+          onChange={(e)=>{
+            handleOverflow(e)
+            handleType()
+          }}
           type="text"
           ref={textInputRef}
           className="grow customScroll outline-0 text-2xl resize-none"

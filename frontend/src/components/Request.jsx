@@ -30,7 +30,6 @@ function Request({ request }) {
     dispatch(removeRequest(request.id))
   }
 
-  
 
 
 

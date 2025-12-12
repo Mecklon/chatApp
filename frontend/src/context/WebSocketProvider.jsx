@@ -20,6 +20,7 @@ import {
   addGroupMessage,
   addReceivedMessage,
   closeDeletedChat,
+  incomingTyping,
   sendGroupReceived,
   sendGroupSeen,
   setChatActivityStatus,
@@ -114,7 +115,6 @@ const WebSocketProvider = ({ children }) => {
       });
       client.subscribe("/user/queue/seenMessage", (payload) => {
         const friendName = payload.body;
-        console.log(friendName + " online");
         dispatch(setPendingZero(friendName));
         dispatch(setReachedZero(friendName));
       });
@@ -125,7 +125,6 @@ const WebSocketProvider = ({ children }) => {
       client.subscribe("/user/queue/kickedOut", (payload) => {
         const body = JSON.parse(payload.body);
 
-        console.log(body)
         dispatch(deleteGroup(body.groupId));
         dispatch(closeDeletedChat(body.groupId));
         setUnseenNotifications((prev) => prev + 1);
@@ -138,6 +137,11 @@ const WebSocketProvider = ({ children }) => {
         setUnseenNotifications((prev) => prev + 1);
         dispatch(addNotification(body.notification))
       })
+      client.subscribe("/user/queue/typing",payload=>{
+        const body = JSON.parse(payload.body)
+        dispatch(incomingTyping(body))
+      })
+
     };
     client.onDisconnect = () => {
       console.log("❌ Disconnected from WebSocket");
@@ -199,6 +203,11 @@ const WebSocketProvider = ({ children }) => {
             }
           }
         });
+        clientRef.current.subscribe("/topic/typing/"+group, (payload)=>{
+          const body = JSON.parse(payload.body);
+          if(body.username === usernameRef.current)return 
+          dispatch(incomingTyping(body))
+        })
       }
     });
   }, [connectionSet, wsConnected, groupSet]);

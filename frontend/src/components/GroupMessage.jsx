@@ -7,7 +7,7 @@ import { normalizeTime } from "../normalizeTime";
 import { IoCheckmark } from "react-icons/io5";
 import Image from "../hooks/Image";
 import Multimedia from "./Multimedia";
-function GroupMessage({ message, isSeen, hasReached, prev, scrollBottom }) {
+function GroupMessage({ message, isSeen, hasReached, prev, maintainScroll }) {
   const { username } = useAuthContext();
   if (message.username === null) {
     return (
@@ -25,13 +25,13 @@ function GroupMessage({ message, isSeen, hasReached, prev, scrollBottom }) {
       <div
         className={`${
           message.media.length === 0 ? "max-w-3/4" : " w-3/4"
-        } self-end`}
+        } self-end max-w-[500px]`}
       >
-        <div className="rounded-lg rounded-tr-none text-text bg-messageSelf p-1.5 text-2xl">
+        <div className="rounded-lg rounded-tr-none text-text bg-messageSelf p-1.5 text-2xl ">
           <div className="mb-2 break-all">{message.content}</div>
           {message.media.length != 0 && (
             <Multimedia
-              scrollBottom={scrollBottom}
+              maintainScroll={maintainScroll}
               media={message.media}
               preview={message.notsaved}
             ></Multimedia>
@@ -53,7 +53,7 @@ function GroupMessage({ message, isSeen, hasReached, prev, scrollBottom }) {
     );
   }
   return (
-    <div className="flex gap-2 text-text items-start">
+    <div className="flex gap-2 text-text items-start max-w-[600px]">
       {prev !== message.username ? (
         <Image
           path={message.profileImgName}
@@ -74,7 +74,7 @@ function GroupMessage({ message, isSeen, hasReached, prev, scrollBottom }) {
           <div className="mg-2 break-all">{message.content}</div>
           {message.media.length != 0 && (
             <Multimedia
-              scrollBottom={scrollBottom}
+              maintainScroll={maintainScroll}
               media={message.media}
               preview={message.notsaved}
             ></Multimedia>

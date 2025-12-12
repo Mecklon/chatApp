@@ -6,7 +6,15 @@ import word from "../assets/word.png";
 import ppt from "../assets/powerpoint.png";
 import pdf from "../assets/pdf.png";
 
-const File = ({ path = null, fileName = "file", fileType = null }) => {
+const File = ({
+  path = null,
+  fileName = "file",
+  fileType = null,
+  onLoadCallback,
+}) => {
+  useEffect(() => {
+    if (onLoadCallback) onLoadCallback();
+  }, []);
   const [src, setSrc] = useState(null);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -63,7 +71,7 @@ const File = ({ path = null, fileName = "file", fileType = null }) => {
         )}
       </div>
       <div className="grow break-all">Download {fileName}</div>
-      <a  href={src} download={fileName} id={`link-${fileName}`}>
+      <a href={src} download={fileName} id={`link-${fileName}`}>
         <div
           htmlFor={`link-${fileName}`}
           className="hover:bg-[rgba(0,0,0,0.5)] duration-200 cursor-pointer p-4 rounded-full shrink-0"

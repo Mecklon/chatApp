@@ -6,7 +6,7 @@ import Video from "../hooks/Video";
 import Audio from "../hooks/Audio";
 import File from "../hooks/File";
 
-function Multimedia({ media, preview, scrollBottom }) {
+function Multimedia({ media, preview, maintainScroll }) {
   const [expand, setExpand] = useState(false);
   if (preview) {
     return (
@@ -15,20 +15,20 @@ function Multimedia({ media, preview, scrollBottom }) {
           const type = m.fileType.split("/")[0];
           return type === "image" ? (
             <img
-              onLoad={scrollBottom}
+              onLoad={maintainScroll}
               className="w-full rounded"
               key={m.id}
               src={m.frontEndObj}
             />
           ) : type === "video" ? (
             <video
-              onLoad={scrollBottom}
+              onLoadedData={maintainScroll}
               className="w-full rounded"
               key-={m.id}
               src={m.frontEndObj}
             />
           ) : (
-            <audio onLoad={scrollBottom} key={m.id} src={m.frontEndObj} />
+            <audio onLoad={maintainScroll} key={m.id} src={m.frontEndObj} />
           );
         })}
       </div>
@@ -44,32 +44,32 @@ function Multimedia({ media, preview, scrollBottom }) {
         const type = m.fileType.split("/")[0];
         return type === "image" ? (
           <Image
-            onLoadCallBack={scrollBottom}
+            onLoadCallBack={maintainScroll}
             className="w-full rounded"
             key={m.id}
             path={m.fileName}
           />
         ) : type === "video" ? (
           <Video
-            onLoadedDataCallBack={scrollBottom}
+            onLoadedDataCallBack={maintainScroll}
             className="w-full rounded"
             key={m.id}
             path={m.fileName}
           />
         ) : type === "audio" ? (
           <Audio
-            onLoadedDataCallBack={scrollBottom}
+            onLoadedDataCallBack={maintainScroll}
             className="w-full"
             key={m.id}
             path={m.fileName}
           />
         ) : (
           <File
+            onLoadCallback={maintainScroll}
             path={m.fileName}
             key={m.id}
             fileName={m.fileName}
             fileType={m.fileType}
-            
           />
         );
       })}

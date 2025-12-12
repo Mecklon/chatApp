@@ -3,6 +3,8 @@ import api from "../../api/api";
 import { SiTaketwointeractivesoftware } from "react-icons/si";
 import { setExpanded } from "./TileSlice";
 
+let timer = null;
+
 export const sendMessage = createAsyncThunk(
   "chat/sendMessage",
   async ({ formData, id, isPrivate }) => {
@@ -48,27 +50,56 @@ export const sendGroupSeen = createAsyncThunk(
 
 export const closeDeletedChat = createAsyncThunk(
   "chat/closeDeletedChat",
-  async(id, {getState, dispatch})=>{
-    const {chat} = getState();
-    if(chat.isPrivate || chat.grpInfo.id != id)return;
-    dispatch(clearChats())
-    dispatch(setExpanded(false))
-
+  async (id, { getState, dispatch }) => {
+    const { chat } = getState();
+    if (chat.isPrivate || chat.grpInfo.id != id) return;
+    dispatch(clearChats());
+    dispatch(setExpanded(false));
   }
-)
+);
 
 export const setFriendRoom = createAsyncThunk(
   "chat/setFriendRoom",
   async (username, { getState, dispatch }) => {
     const { connection } = getState();
     const friends = connection.connections;
-    console.log(username)
 
     friends.forEach((f) => {
       if (f.name === username) {
         dispatch(setPrivateRoom(f));
       }
     });
+    return;
+  }
+);
+
+export const incomingTyping = createAsyncThunk(
+  "chat/incomingTyping",
+  async (payload, { getState, dispatch }) => {
+    const { chat } = getState();
+    if (payload.private) {
+      if (chat.isPrivate && chat.userInfo.name === payload.username) {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        dispatch(setTyping(true));
+
+        timer = setTimeout(() => {
+          dispatch(setTyping(false));
+        }, 2000);
+      }
+    } else {
+      if (!chat.isPrivate) {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        dispatch(setTyping(true));
+
+        timer = setTimeout(() => {
+          dispatch(setTyping(false));
+        }, 2000);
+      }
+    }
     return;
   }
 );
@@ -85,7 +116,11 @@ const initialState = {
   sendMessageError: null,
   gettingMessage: false,
   gettingMessageError: null,
+  typing: false,
+  hasMore: true
 };
+
+let timeOut = null;
 
 const chatSlice = createSlice({
   name: "chat",
@@ -97,14 +132,15 @@ const chatSlice = createSlice({
       state.userInfo = action.payload;
       state.grpInfo = null;
       state.isPrivate = true;
+      state.typing = false;
     },
     addMessage: (state, action) => {
-      console.log(action.payload);
       state.chats.push(action.payload);
       state.pending++;
       state.reached++;
     },
     addReceivedMessage: (state, action) => {
+      state.typing = false
       state.chats.push({ id: nanoid(), ...action.payload });
     },
     setReachedZero: (state, action) => {
@@ -129,6 +165,7 @@ const chatSlice = createSlice({
       state.userInfo = null;
       state.grpInfo = action.payload;
       state.isPrivate = false;
+      state.typing = false;
     },
     addGroupMessage: (state, action) => {
       state.chats.push({ id: nanoid(), ...action.payload.message });
@@ -147,6 +184,9 @@ const chatSlice = createSlice({
     },
     clearChats: (state, action) => {
       return initialState;
+    },
+    setTyping: (state, action) => {
+      state.typing = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -182,6 +222,9 @@ const chatSlice = createSlice({
       .addCase(getMessages.fulfilled, (state, action) => {
         state.gettingMessage = false;
         state.gettingMessageError = null;
+        if(action.payload.chats.length===0){
+          state.hasMore = false;
+        }
         let chatsWithId = action.payload.chats.map((chat) => {
           return {
             id: nanoid(),
@@ -189,6 +232,7 @@ const chatSlice = createSlice({
           };
         });
 
+        
         chatsWithId.reverse();
         state.pending = action.payload.pending;
         state.reached = action.payload.reached;
@@ -213,6 +257,9 @@ const chatSlice = createSlice({
           };
         });
 
+        if(action.payload.chats.length===0){
+          state.hasMore = false;
+        }
         chatsWithId.reverse();
         state.pending = action.payload.pending;
         state.reached = action.payload.reached;
@@ -233,5 +280,6 @@ export const {
   addGroupMessage,
   updateGroupMaxValues,
   clearChats,
+  setTyping,
 } = chatSlice.actions;
 export default chatSlice.reducer;

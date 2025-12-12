@@ -1,5 +1,7 @@
 package com.mecklon.backend.websocket;
 
+import com.mecklon.backend.DTO.ActivityStatusDTO;
+import com.mecklon.backend.DTO.TypingDTO;
 import com.mecklon.backend.repo.ConnectionsRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,18 @@ public class ChatControllerSocket {
     @MessageMapping("/chat/receivedMessage")
     public void sendMessageSeen(@Payload Map<String, String> payload, Principal principal){
         messagingTemplate.convertAndSendToUser(payload.get("sender"),"queue/seenMessage",principal.getName());
+    }
+
+
+    @MessageMapping("/chat/typing")
+    public void propogateTyping(@Payload Map<String, String> payload, Principal principal){
+        if(payload.get("private").equals("true")){
+            messagingTemplate.convertAndSendToUser(payload.get("receiver"),"queue/typing",new TypingDTO(true, principal.getName()));
+        }else{
+            messagingTemplate.convertAndSend("/topic/typing/"+payload.get("receiver"),new TypingDTO(false, principal.getName()));
+
+
+        }
     }
 
 }
