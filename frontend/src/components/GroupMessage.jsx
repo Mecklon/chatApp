@@ -37,7 +37,7 @@ function GroupMessage({ message, isSeen, hasReached, prev, maintainScroll }) {
             ></Multimedia>
           )}
         </div>
-        <div className="flex gap-1 text-sm items-center justify-end">
+        <div className="flex gap-1 text-sm text-text items-center justify-end">
           {isSeen === true ? (
             <IoCheckmarkDone className="text-blue-500 text-2xl" />
           ) : hasReached === true ? (

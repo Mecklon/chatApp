@@ -44,7 +44,7 @@ function CreateGroupFormFriend({
   return (
     <label
       htmlFor={connection.id}
-      className="flex gap-3 hover:bg-blue-300 duration-100 rounded-lg items-center p-2 py-1 checkBlue"
+      className="flex gap-3 hover:bg-bg-light duration-100 rounded-lg items-center p-2 py-1 checkBlue"
       key={connection.id}
     >
       <input defaultChecked={members.has(connection.name)} onClick={handleClick} id={connection.id} type="checkbox" />

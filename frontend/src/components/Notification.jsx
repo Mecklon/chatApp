@@ -3,7 +3,6 @@ import { normalizeTime } from "../normalizeTime";
 import avatar from "../assets/defaultAvatar.webp";
 import groupAvatar from "../assets/defaultGroupAvatar.jpg";
 function Notification({ notification }) {
-  console.log(notification);
   return (
     <div className="p-2 border-t border-border flex gap-2 ">
       <div className="h-[50px] w-[50px] overflow-hidden rounded-full shrink-0">
@@ -39,6 +38,12 @@ function Notification({ notification }) {
               You were kicked out of <strong>{notification.groupName}</strong>
             </>
           )}
+          {notification.typeId === 4 && (
+            <>
+              You were added to group <strong>{notification.groupName}</strong>
+            </>
+          )}
+          
         </div>
       </div>
     </div>

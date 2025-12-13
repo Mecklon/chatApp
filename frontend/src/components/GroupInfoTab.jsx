@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import VisualMedia from "./VisualMedia";
 import File from "../hooks/File";
 import Member from "./Member";
+import { motion } from "motion/react";
 
 function GroupInfoTab() {
   const dispatch = useDispatch();
@@ -77,7 +78,12 @@ function GroupInfoTab() {
   const [tab, setTab] = useState(1);
 
   return (
-    <div className="bg-bg border border-border text-text rounded-xl [grid-area:info] p-3 relative flex flex-col min-h-0">
+    <motion.div className="bg-bg border border-border text-text rounded-xl [grid-area:info] p-3 relative flex flex-col min-h-0"
+    initial={{translateX:600}}
+    animate={{translateX:0}}
+
+    transition={{translateX:{bounce:0}}}
+    >
       <RxCross1
         className="absolute right-3 text-text duration-300 hover:scale-125 cursor-pointer"
         onClick={() => dispatch(setExpanded(false))}
@@ -162,7 +168,7 @@ function GroupInfoTab() {
           ))}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 

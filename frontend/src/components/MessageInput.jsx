@@ -155,7 +155,7 @@ function MessageInput() {
   return (
     <form
       onSubmit={handleSendMessage}
-      className="flex gap-1 items-baseline relative z-10 shrink-0"
+      className="flex gap-1 items-baseline relative  shrink-0"
     >
       <div className="absolute bottom-full flex gap-1  mb-1  w-full customScroll thinTrack  shrink-0">
         {files.map((file, index) => {

@@ -9,22 +9,21 @@ const Notifications = forwardRef(({ state }, ref) => {
   const { notifications, hasMore, loading } = useSelector(
     (state) => state.notification
   );
-  const {fetch} = useGetFetch()
+  const { fetch } = useGetFetch();
   const dispatch = useDispatch();
 
   const endRef = useRef();
 
-  const {unseenNotifications, setUnseenNotifications} = useAuthContext();
+  const { unseenNotifications, setUnseenNotifications } = useAuthContext();
 
-  useEffect(()=>{
-    return ()=>{
-      if(unseenNotifications===0)return
-      fetch("setNotificationSeen")
-      setUnseenNotifications(()=>0)
-    }
-  },[])
+  useEffect(() => {
+    return () => {
+      if (unseenNotifications === 0) return;
+      fetch("setNotificationSeen");
+      setUnseenNotifications(() => 0);
+    };
+  }, []);
 
-  
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       const entry = entries[0];
@@ -52,10 +51,14 @@ const Notifications = forwardRef(({ state }, ref) => {
   return (
     <div
       ref={ref}
-      className="top-full bg-bg-dark rounded-xl border text-text border-border absolute w-[500px] -translate-x-1/2 [max-height:700px] overflow-auto customScroll"
+      className={`top-full bg-bg-dark rounded-xl text-text absolute w-[500px] -translate-x-1/2 [max-height:700px] overflow-auto customScroll ${
+        notifications.length != 0 && "border border-border"
+      }`}
     >
-      {notifications.map(notification=>{
-        return < Notification key={notification.id} notification={notification}/>
+      {notifications.map((notification) => {
+        return (
+          <Notification key={notification.id} notification={notification} />
+        );
       })}
 
       {hasMore && <div ref={endRef}>Loading...</div>}

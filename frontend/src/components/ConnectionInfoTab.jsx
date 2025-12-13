@@ -8,7 +8,7 @@ import Image from "../hooks/Image";
 import { useEffect, useState } from "react";
 import VisualMedia from "./VisualMedia";
 import File from "../hooks/File";
-
+import { motion } from "motion/react";
 
 function ConnectionInfoTab() {
   const dispatch = useDispatch();
@@ -41,7 +41,12 @@ function ConnectionInfoTab() {
   const [visual, setVisual] = useState(true);
 
   return (
-    <div className="bg-bg border border-border text-text rounded-xl [grid-area:info] p-3 relative flex flex-col min-h-0">
+    <motion.div
+      className="bg-bg border border-border text-text rounded-xl [grid-area:info] p-3 relative flex flex-col min-h-0"
+      initial={{ translateX: 600 }}
+      animate={{ translateX: 0 }}
+      transition={{ translateX: { bounce: 0 } }}
+    >
       <RxCross1
         className="absolute right-3 cursor-pointer text-text duration-300 hover:scale-125"
         onClick={() => dispatch(setExpanded(false))}
@@ -75,9 +80,6 @@ function ConnectionInfoTab() {
       {visual && (
         <div className="grid grid-cols-3 w-full h-full overflow-auto customScroll content-start">
           <VisualMedia mediaList={visualMedia} />
-       
-       
-          
         </div>
       )}
       {!visual && (
@@ -90,10 +92,9 @@ function ConnectionInfoTab() {
               fileType={document.fileType}
             />
           ))}
-         
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
 

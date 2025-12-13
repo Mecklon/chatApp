@@ -5,7 +5,8 @@ import Image from "../hooks/Image";
 import { TiTick } from "react-icons/ti";
 import { ImCross } from "react-icons/im";
 import usePostFetch from "../hooks/usePostFetch";
-import rolling from '../assets/rolling.gif'
+import rolling from "../assets/rolling.gif";
+import { motion } from "motion/react";
 
 const ProfileEditor = React.forwardRef((props, ref) => {
   const {
@@ -23,7 +24,7 @@ const ProfileEditor = React.forwardRef((props, ref) => {
   const captionRef = useRef();
   const imageRef = useRef();
 
-  const { fetch , loading} = usePostFetch();
+  const { fetch, loading } = usePostFetch();
 
   const handleChange = (e) => {
     if (e.target.files[0]) {
@@ -64,9 +65,14 @@ const ProfileEditor = React.forwardRef((props, ref) => {
 
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 bg-stone-950/75 z-1 flex items-center justify-center ">
-      <div
+      <motion.div
+        initial={{ opacity: 0, translateY: 100 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{
+          duration: 0.1,
+        }}
         ref={ref}
-        className="rounded-lg bg-background h-full w-full max-h-200 max-w-150 flex flex-col gap-2 justify-start items-center py-10 border border-border text-text"
+        className="rounded-lg bg-bg bg-background h-full w-full max-h-200 max-w-150 flex flex-col gap-2 justify-start items-center py-10 border border-border text-text"
       >
         <label
           htmlFor="imageInput"
@@ -97,7 +103,6 @@ const ProfileEditor = React.forwardRef((props, ref) => {
           defaultValue={caption}
         ></textarea>
         <div className="flex gap-1 items-center">
-           
           <TiTick
             onClick={handleSubmit}
             className=" text-5xl hover:scale-110 duration-300 cursor-pointer"
@@ -107,7 +112,7 @@ const ProfileEditor = React.forwardRef((props, ref) => {
             className=" text-2xl hover:scale-110 duration-300 cursor-pointer"
           />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 });

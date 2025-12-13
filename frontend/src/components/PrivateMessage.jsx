@@ -23,7 +23,7 @@ function PrivateMessage({ message, isSeen, hasReached,maintainScroll }) {
             <Multimedia maintainScroll={maintainScroll} media={message.media} preview={message.notsaved}></Multimedia>
           )}
         </div>
-        <div className="flex gap-1 text-sm items-center justify-end">
+        <div className="flex gap-1 text-sm items-center justify-end text-text">
           {isSeen === true ? (
             <IoCheckmarkDone className="text-blue-500 text-2xl" />
           ) : hasReached === true ? (

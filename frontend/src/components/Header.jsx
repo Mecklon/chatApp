@@ -79,7 +79,7 @@ function Header() {
 
   return (
     <div
-      className=" [grid-area:header] flex 
+      className=" [grid-area:header]  flex 
     z-10 items-center justify-between p-1 relative"
     >
       <div className="flex gap-1 items-center p-1 text-2xl font-bold text-text">

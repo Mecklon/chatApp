@@ -13,14 +13,13 @@ import GroupInfoTab from "./GroupInfoTab";
 import ConnectionInfoTab from "./ConnectionInfoTab";
 
 function InfoTab() {
-    const {isPrivate} = useSelector(store=> store.chat)
+  const { isPrivate } = useSelector((store) => store.chat);
 
-    if(isPrivate){
-      return <ConnectionInfoTab/>
-    }
+  if (isPrivate) {
+    return <ConnectionInfoTab />;
+  }
 
-    return <GroupInfoTab/>
-
+  return <GroupInfoTab />;
 }
 
 export default InfoTab;

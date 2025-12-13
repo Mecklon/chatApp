@@ -8,6 +8,7 @@ import { setUnseenGroupZero } from "../store/slices/connectionsSlice";
 import { useSearchParams } from "react-router-dom";
 import { setExpanded } from "../store/slices/TileSlice";
 
+
 function Group({ group }) {
   const dispatch = useDispatch();
   const chatInfo = useSelector((store) => store.chat);
@@ -36,7 +37,7 @@ function Group({ group }) {
       </div>
       <div className="grow min-w-0 text-text">
         <div className="text-ellipsis text-xl font-bold">{group.name}</div>
-        <div className="text-ellipsis text-nowrap overflow-hidden text-sm">
+        <div className="text-ellipsis flex items-center gap-1 text-nowrap overflow-hidden text-xs">
           {group.sender && group.sender + " : "}
 
           {group.latestMessage && group.latestMessage}

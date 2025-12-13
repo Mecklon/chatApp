@@ -30,7 +30,7 @@ function NonMember({ connection, setMembers,grpName, grpId }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <div
-      className="bg-red-500 p-2 flex gap-2 rounded-sm items-center"
+      className="bg-bg-light  p-2 flex gap-2 rounded-sm items-center"
       key={connection.id}
     >
         {expanded && <ConfirmationBox setExpanded={setExpanded} handleYes={handleAdd} message={"Add "+ connection.name+" to "+grpName}/>}

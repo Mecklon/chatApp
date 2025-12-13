@@ -59,7 +59,7 @@ function Contacts() {
   }, []);
 
   return (
-    <div className="bg-bg rounded-xl border border-border [grid-area:sideBar] p-2 flex flex-col h-full min-h-0">
+    <div className="bg-bg rounded-xl border border-border [grid-area:sideBar] p-2 flex flex-col h-full min-h-0 ">
       <div className="p-1 mx-1 bg-bg-light rounded-lg flex gap-2 items-center">
         <HiMagnifyingGlass className="text-4xl px-1 text-text" />
         <input

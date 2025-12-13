@@ -18,11 +18,12 @@ function Friend({ connection }) {
     dispatch(setExpanded(false));
   };
 
-  const room = useSelector((store) => store.chat);
   return (
     <div
+      
       onClick={handleClick}
       className="cursor-pointer bg-bg-light mb-1 rounded-lg  flex px-3 py-2 gap-2 relative w-full items-center justify-center "
+     
     >
       <div className="absolute right-2 top-2 text-xs text-text">
         {normalizeTime(connection.postedOn)}
@@ -39,10 +40,11 @@ function Friend({ connection }) {
       </div>
       <div className="grow min-w-0">
         <div className="text-ellipsis text-xl font-bold text-text">{connection.name}</div>
-        <div className="text-ellipsis text-nowrap overflow-hidden text-sm flex items-center text-text">
+        <div className="text-ellipsis text-nowrap overflow-hidden text-xs flex gap-1 items-center text-text">
           {connection.sender && connection.sender + " : "}
 
           {connection.content && connection.content }
+          
         </div>
       </div>
       {connection.pending != 0 && (

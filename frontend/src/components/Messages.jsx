@@ -17,7 +17,8 @@ function Messages() {
     chatRef.current.scrollTop =
       chatRef.current.scrollHeight -
       chatRef.current.offsetHeight -
-      bottomScrollLength.current -1 ;
+      bottomScrollLength.current -
+      1;
   };
 
   useEffect(() => {
@@ -89,7 +90,7 @@ function Messages() {
   return (
     <div
       ref={chatRef}
-      className="grow mx-1 flex flex-col gap-2 customScroll overflow-auto thinTrack pr-2 min-h-0"
+      className="grow mx-1 flex flex-col gap-2 customScroll overflow-auto thinTrack pr-2 min-h-0 duration-300"
       onScroll={(e) => {
         bottomScrollLength.current =
           e.target.scrollHeight - e.target.offsetHeight - e.target.scrollTop;
@@ -98,7 +99,7 @@ function Messages() {
       {chatInfo.hasMore && (
         <div className="text-text" ref={endRef}>
           {" "}
-          more
+          Loading..
         </div>
       )}
       {chatInfo.isPrivate &&
