@@ -10,6 +10,7 @@ import {
   incrementGroupUnseen,
   incrementUnseen,
   setActivityStatus,
+  updateBlockedContact,
   updateLatestGroupMessage,
   updateLatestMessage,
 } from "../store/slices/connectionsSlice";
@@ -26,6 +27,7 @@ import {
   setChatActivityStatus,
   setPendingZero,
   setReachedZero,
+  updateBlockedChat,
   updateGroupMaxValues,
 } from "../store/slices/chatSlice";
 import { AiOutlineConsoleSql } from "react-icons/ai";
@@ -128,19 +130,46 @@ const WebSocketProvider = ({ children }) => {
         dispatch(deleteGroup(body.groupId));
         dispatch(closeDeletedChat(body.groupId));
         setUnseenNotifications((prev) => prev + 1);
-        dispatch(addNotification(body))
+        dispatch(addNotification(body));
       });
 
-      client.subscribe("/user/queue/addedToGroup",payload=>{
-        const body = JSON.parse(payload.body)
-        dispatch(addGroup(body.group))
+      client.subscribe("/user/queue/addedToGroup", (payload) => {
+        const body = JSON.parse(payload.body);
+        dispatch(addGroup(body.group));
         setUnseenNotifications((prev) => prev + 1);
-        dispatch(addNotification(body.notification))
-      })
-      client.subscribe("/user/queue/typing",payload=>{
-        const body = JSON.parse(payload.body)
-        dispatch(incomingTyping(body))
-      })
+        dispatch(addNotification(body.notification));
+      });
+      client.subscribe("/user/queue/typing", (payload) => {
+        const body = JSON.parse(payload.body);
+        dispatch(incomingTyping(body));
+      });
+      client.subscribe("/user/queue/gotBlocked", (payload) => {
+        const { sender, notification } = JSON.parse(payload.body);
+        console.log(sender);
+        console.log(notification);
+        dispatch(
+          updateBlockedContact({ sender, receiver: usernameRef.current })
+        );
+        dispatch(updateBlockedChat({ sender, receiver: usernameRef.current }));
+
+        console.log("incrementiing notifications")
+        setUnseenNotifications((prev) => prev + 1);
+        dispatch(addNotification(notification));
+      });
+
+      client.subscribe("/user/queue/gotUnblocked", (payload) => {
+        const { sender, notification } = JSON.parse(payload.body);
+        console.log(sender);
+        console.log(notification);
+        dispatch(
+          updateBlockedContact({ sender, receiver: null })
+        );
+        dispatch(updateBlockedChat({ sender, receiver: null }));
+
+        console.log("incrementiing notifications")
+        setUnseenNotifications((prev) => prev + 1);
+        dispatch(addNotification(notification));
+      });
 
     };
     client.onDisconnect = () => {
@@ -203,11 +232,11 @@ const WebSocketProvider = ({ children }) => {
             }
           }
         });
-        clientRef.current.subscribe("/topic/typing/"+group, (payload)=>{
+        clientRef.current.subscribe("/topic/typing/" + group, (payload) => {
           const body = JSON.parse(payload.body);
-          if(body.username === usernameRef.current)return 
-          dispatch(incomingTyping(body))
-        })
+          if (body.username === usernameRef.current) return;
+          dispatch(incomingTyping(body));
+        });
       }
     });
   }, [connectionSet, wsConnected, groupSet]);

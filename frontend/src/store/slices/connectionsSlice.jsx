@@ -54,9 +54,6 @@ export const getGroups = createAsyncThunk("connections/getGroups", async () => {
   return res.data;
 });
 
-
-
-
 const connectionsSlice = createSlice({
   name: "connections",
   initialState,
@@ -128,11 +125,19 @@ const connectionsSlice = createSlice({
     clearConnections: () => {
       return initialState;
     },
-    deleteGroup:(state, action)=>{
-      const id = action.payload
-      state.groups = state.groups.filter(group=> group.id!=id)
-    }
-   
+    deleteGroup: (state, action) => {
+      const id = action.payload;
+      state.groups = state.groups.filter((group) => group.id != id);
+    },
+    updateBlockedContact: (state, action) => {
+      const receiver = action.payload.receiver;
+      const sender = action.payload.sender
+      state.connections = state.connections.map((connection) => {
+        return connection.name === sender
+          ? { ...connection, blocked: receiver }
+          : connection;
+      });
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -218,7 +223,7 @@ export const {
   addGroup,
   incrementGroupUnseen,
   clearConnections,
-  deleteGroup
-  
+  deleteGroup,
+  updateBlockedContact
 } = connectionsSlice.actions;
 export default connectionsSlice.reducer;

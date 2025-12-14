@@ -43,6 +43,11 @@ function Notification({ notification }) {
               You were added to group <strong>{notification.groupName}</strong>
             </>
           )}
+          {notification.typeId === 5 && (
+            <>
+              <strong>{notification.senderName}</strong> blocked you
+            </>
+          )}
           
         </div>
       </div>

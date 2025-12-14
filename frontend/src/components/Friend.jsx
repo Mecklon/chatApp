@@ -7,6 +7,7 @@ import { setUnseenZero } from "../store/slices/connectionsSlice";
 import { normalizeTime } from "../normalizeTime";
 import { setExpanded } from "../store/slices/TileSlice";
 import { FaImage } from "react-icons/fa6";
+import { ConnectionStates } from "mongoose";
 
 function Friend({ connection }) {
   const dispatch = useDispatch();

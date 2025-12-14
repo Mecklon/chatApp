@@ -10,6 +10,7 @@ import Requests from "./Requests";
 import Notifications from "./Notifications";
 import { MdSunny } from "react-icons/md";
 import { IoMdMoon } from "react-icons/io";
+import LangSearch from "./LangSearch";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -85,6 +86,7 @@ function Header() {
       <div className="flex gap-1 items-center p-1 text-2xl font-bold text-text">
         <PiGraphLight className="text-5xl text-text" />
         Uni Talk
+        <LangSearch/>
       </div>
       <div className="h-full flex gap-4 items-center text-text cursor-pointer text-3xl">
         <div

@@ -117,7 +117,7 @@ const initialState = {
   gettingMessage: false,
   gettingMessageError: null,
   typing: false,
-  hasMore: true
+  hasMore: true,
 };
 
 let timeOut = null;
@@ -140,7 +140,7 @@ const chatSlice = createSlice({
       state.reached++;
     },
     addReceivedMessage: (state, action) => {
-      state.typing = false
+      state.typing = false;
       state.chats.push({ id: nanoid(), ...action.payload });
     },
     setReachedZero: (state, action) => {
@@ -188,6 +188,14 @@ const chatSlice = createSlice({
     setTyping: (state, action) => {
       state.typing = action.payload;
     },
+    updateBlockedChat: (state, action) => {
+      const sender = action.payload.sender;
+      const receiver = action.payload.receiver;
+
+      if (state.isPrivate && state.userInfo.name === sender) {
+        state.userInfo.blocked = receiver;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -222,7 +230,7 @@ const chatSlice = createSlice({
       .addCase(getMessages.fulfilled, (state, action) => {
         state.gettingMessage = false;
         state.gettingMessageError = null;
-        if(action.payload.chats.length===0){
+        if (action.payload.chats.length === 0) {
           state.hasMore = false;
         }
         let chatsWithId = action.payload.chats.map((chat) => {
@@ -232,7 +240,6 @@ const chatSlice = createSlice({
           };
         });
 
-        
         chatsWithId.reverse();
         state.pending = action.payload.pending;
         state.reached = action.payload.reached;
@@ -257,7 +264,7 @@ const chatSlice = createSlice({
           };
         });
 
-        if(action.payload.chats.length===0){
+        if (action.payload.chats.length === 0) {
           state.hasMore = false;
         }
         chatsWithId.reverse();
@@ -279,6 +286,7 @@ export const {
   setGroup,
   addGroupMessage,
   updateGroupMaxValues,
+  updateBlockedChat,
   clearChats,
   setTyping,
 } = chatSlice.actions;

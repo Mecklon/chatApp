@@ -1,11 +1,12 @@
 import React from "react";
 import { motion } from "motion/react";
 
+
 function ConfirmationBox({ setExpanded, handleYes, message }) {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="fixed inset-0 bg-black/75 flex  text-text items-center justify-center z-10"
+      className="fixed inset-0 backdrop-blur-2xl flex  text-text items-center justify-center z-10"
     >
       <motion.div
         initial={{ opacity:0, translateY:100}}

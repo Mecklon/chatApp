@@ -10,7 +10,7 @@ function Chat() {
 
   if (!room.id) {
     return (
-      <div className="[grid-area:main] [min-width:400px] text-center text-text text-5xl font-bold pt-10 h-full z-10">
+      <div className="[grid-area:main] [min-width:400px] text-center text-text text-5xl font-bold pt-10 h-full ">
         Select a chat
       </div>
     );

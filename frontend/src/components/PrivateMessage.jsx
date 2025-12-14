@@ -10,6 +10,17 @@ import Multimedia from "./Multimedia";
 function PrivateMessage({ message, isSeen, hasReached,maintainScroll }) {
   const { username } = useAuthContext();
   
+
+  if (message.fromSystem) {
+      return (
+        <div className="self-center max-w-1/2">
+          <div className="p-1.5 rounded-lg text-2xl text-text px-4 bg-stone-600 ">
+            {message.content}
+          </div>
+          <div className="ml-auto">{normalizeTime(message.time)}</div>
+        </div>
+      );
+    }
   if (username === message.username) {
     return (
       <div

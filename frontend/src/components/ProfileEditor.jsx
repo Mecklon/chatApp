@@ -64,7 +64,7 @@ const ProfileEditor = React.forwardRef((props, ref) => {
   }, [img]);
 
   return (
-    <div className="fixed top-0 left-0 right-0 bottom-0 bg-stone-950/75 z-1 flex items-center justify-center ">
+    <div className="fixed top-0 left-0 right-0 bottom-0 bg-stone z-1 flex items-center justify-center backdrop-blur-2xl">
       <motion.div
         initial={{ opacity: 0, translateY: 100 }}
         animate={{ opacity: 1, translateY: 0 }}

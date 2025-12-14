@@ -9,6 +9,13 @@ import { useEffect, useState } from "react";
 import VisualMedia from "./VisualMedia";
 import File from "../hooks/File";
 import { motion } from "motion/react";
+import usePostFetch from "../hooks/usePostFetch";
+import { MdBlock } from "react-icons/md";
+import { CgUnblock } from "react-icons/cg";
+import ConfirmationBox from "./ConfirmationBox";
+import { addMessage, updateBlockedChat } from "../store/slices/chatSlice";
+import { useAuthContext } from "../hooks/useAuthContext";
+import { updateBlockedContact } from "../store/slices/connectionsSlice";
 
 function ConnectionInfoTab() {
   const dispatch = useDispatch();
@@ -16,11 +23,20 @@ function ConnectionInfoTab() {
   const { userInfo } = useSelector((store) => store.chat);
 
   const { fetch } = useGetFetch();
+  const { fetch: postFetch } = usePostFetch();
 
   const [caption, setCaption] = useState(null);
 
+  const [expanded, setExpanded] = useState(false);
+
   const [visualMedia, setVisualMedia] = useState([]);
   const [documentMedia, setDocumentMedia] = useState([]);
+
+  const { username } = useAuthContext();
+
+  console.log(expanded ,userInfo.blocked  )
+  console.log(expanded , userInfo.blocked != username , !userInfo.blocked)
+  console.log(expanded && userInfo.blocked != username && userInfo.blocked )
 
   useEffect(() => {
     if (!userInfo.name) return;
@@ -51,6 +67,51 @@ function ConnectionInfoTab() {
         className="absolute right-3 cursor-pointer text-text duration-300 hover:scale-125"
         onClick={() => dispatch(setExpanded(false))}
       />
+
+      {userInfo.blocked != username && !userInfo.blocked && (
+        <div
+          className="absolute left-1 flex gap-1/2 items-center text-rose-600 p-1 px-2 duration-300 hover:bg-bg-light cursor-pointer top-1 rounded-sm"
+          onClick={() => setExpanded(true)}
+        >
+          <MdBlock className="text-xl" />
+          block
+        </div>
+      )}
+      {expanded && userInfo.blocked != username && !userInfo.blocked && (
+        <ConfirmationBox
+          setExpanded={setExpanded}
+          handleYes={async () => {
+            const message = await postFetch("blockUser/" + userInfo.name);
+            dispatch(addMessage(message));
+            dispatch(updateBlockedChat({sender: userInfo.name, receiver: userInfo.name}))
+            dispatch(updateBlockedContact({sender: userInfo.name, receiver: userInfo.name}))
+          }}
+          message={"Block " + userInfo.name + " ?"}
+        />
+      )}
+
+      {userInfo.blocked != username && userInfo.blocked && (
+        <div
+          className="absolute left-1 flex gap-1/2 items-center text-green-600 p-1 px-2 duration-300 hover:bg-bg-light cursor-pointer top-1 rounded-sm"
+          onClick={()=>setExpanded(true)}
+        >
+          <CgUnblock className="text-xl" />
+          unblock
+        </div>
+      )}
+
+      {expanded && userInfo.blocked != username && userInfo.blocked && (
+        <ConfirmationBox
+          setExpanded={setExpanded}
+          handleYes={async () => {
+            const message = await postFetch("unblockUser/" + userInfo.name);
+            dispatch(addMessage(message));
+            dispatch(updateBlockedChat({sender: userInfo.name, receiver: null}))
+            dispatch(updateBlockedContact({sender: userInfo.name, receiver: null}))
+          }}
+          message={"Unblock " + userInfo.name + " ?"}
+        />
+      )}
 
       <Image
         path={userInfo.profileImgName}

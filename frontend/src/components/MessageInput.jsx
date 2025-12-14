@@ -44,6 +44,7 @@ function MessageInput() {
 
   const { client } = useWebSocketContext();
   const handleType = () => {
+    if (chatInfo.isPrivate && chatInfo.userInfo.blocked !== null) return;
     let body;
     if (chatInfo.isPrivate) {
       body = {
@@ -85,6 +86,9 @@ function MessageInput() {
 
   const handleSendMessage = (e) => {
     e.preventDefault();
+    if (chatInfo.isPrivate && chatInfo.userInfo.blocked !== null) return;
+
+    
     const formData = new FormData();
     if (textInputRef.current.value.trim() === "" && files.length === 0) {
       return;
@@ -219,9 +223,9 @@ function MessageInput() {
         </label>
         <textarea
           rows={1}
-          onChange={(e)=>{
-            handleOverflow(e)
-            handleType()
+          onChange={(e) => {
+            handleOverflow(e);
+            handleType();
           }}
           type="text"
           ref={textInputRef}
