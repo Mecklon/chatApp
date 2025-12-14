@@ -49,4 +49,7 @@ public class Connection {
     @OneToOne(cascade= CascadeType.ALL)
     private Message latest;
 
+
+    private String blocked;
+
 }

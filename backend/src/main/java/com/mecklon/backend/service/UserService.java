@@ -181,11 +181,11 @@ public class UserService {
                                     receiver.getProfileImg().getFileName(): null,
                             true,
                                 LocalDateTime.now()
-
+                            ,null
                 ))
         );
 
-        return new Contact(0, null,null, sender.getUsername(), null, sender.getProfileImg()!=null ? sender.getProfileImg().getFileName(): null,true,LocalDateTime.now());
+        return new Contact(0, null,null, sender.getUsername(), null, sender.getProfileImg()!=null ? sender.getProfileImg().getFileName(): null,true,LocalDateTime.now(),null);
     }
     @Transactional
     public void rejectRequest(Long id, String senderUsername) {
@@ -471,5 +471,145 @@ public class UserService {
 
 
 
+    }
+
+    @Transactional
+    public MessageDTO blockConnections(String username, Long id, String principalUsername) {
+        User blocked = repo.findByUsername(username);
+        User sender = repo.findById(id).orElseThrow();
+        ConnectionKey key = new ConnectionKey();
+        if(blocked.getId()< id){
+            key.setUser1Id(blocked.getId());
+            key.setUser2Id(id);
+        }else{
+            key.setUser1Id(id);
+            key.setUser2Id(blocked.getId());
+        }
+
+        Connection conn = Crepo.findById(key).orElseThrow();
+
+
+        Message m = new Message().builder()
+                .content(username+" was blocked by "+principalUsername)
+                .connection(conn)
+                .postedOn(LocalDateTime.now())
+                .build();
+
+        conn.setLatest(m);
+
+        MessageDTO messageDTO =  new MessageDTO(
+                m.getContent(),
+                m.getPostedOn(),
+                null,
+                principalUsername,
+                null,
+                true
+        );
+
+        if(blocked.isOnline()){
+            messagingTemplate.convertAndSendToUser(username,"/queue/receivedMessage",messageDTO);
+        }else{
+
+            if(blocked.getId()< id){
+                conn.setPending1(conn.getPending1()+1);
+                conn.setReached1(conn.getReached1()+1);
+            }else{
+
+                conn.setPending2(conn.getPending2()+1);
+                conn.setReached2(conn.getReached2()+1);
+            }
+        }
+        conn.setBlocked(username);
+
+        Notification notification  = new Notification();
+        notification.setTypeId(5);
+        notification.setReceiver(blocked);
+        notification.setSender(sender);
+        notification.setType(NotificationType.FRIEND_MESSAGE);
+        notification.setPostedOn(LocalDateTime.now());
+        Nrepo.save(notification);
+
+        NotificationDTO notificationDTO = new NotificationDTO(
+                sender.getUsername(),
+                sender.getProfileImg()!=null? sender.getProfileImg().getFileName():null,
+                5,
+                null,
+                null,
+                NotificationType.FRIEND_MESSAGE,
+                notification.getPostedOn(),
+                null
+        );
+        messagingTemplate.convertAndSendToUser(username, "queue/gotBlocked", new BlockedUnblockedDTO(principalUsername, notificationDTO));
+        return messageDTO;
+    }
+
+    @Transactional
+    public MessageDTO unblockConnection(String username, Long id, String principalUsername) {
+        User blocked = repo.findByUsername(username);
+        User sender = repo.findById(id).orElseThrow();
+        ConnectionKey key = new ConnectionKey();
+        if(blocked.getId()< id){
+            key.setUser1Id(blocked.getId());
+            key.setUser2Id(id);
+        }else{
+            key.setUser1Id(id);
+            key.setUser2Id(blocked.getId());
+        }
+
+        Connection conn = Crepo.findById(key).orElseThrow();
+
+
+        Message m = new Message().builder()
+                .content(username+" was unblocked by "+principalUsername)
+                .connection(conn)
+                .postedOn(LocalDateTime.now())
+                .build();
+
+        conn.setLatest(m);
+
+        MessageDTO messageDTO =  new MessageDTO(
+                m.getContent(),
+                m.getPostedOn(),
+                null,
+                principalUsername,
+                null,
+                true
+        );
+
+        if(blocked.isOnline()){
+            messagingTemplate.convertAndSendToUser(username,"/queue/receivedMessage",messageDTO);
+        }else{
+
+            if(blocked.getId()< id){
+                conn.setPending1(conn.getPending1()+1);
+                conn.setReached1(conn.getReached1()+1);
+            }else{
+
+                conn.setPending2(conn.getPending2()+1);
+                conn.setReached2(conn.getReached2()+1);
+            }
+        }
+        conn.setBlocked(null);
+
+        Notification notification  = new Notification();
+        notification.setTypeId(5);
+        notification.setReceiver(blocked);
+        notification.setSender(sender);
+        notification.setType(NotificationType.FRIEND_MESSAGE);
+        notification.setPostedOn(LocalDateTime.now());
+        Nrepo.save(notification);
+
+        NotificationDTO notificationDTO = new NotificationDTO(
+                sender.getUsername(),
+                sender.getProfileImg()!=null? sender.getProfileImg().getFileName():null,
+                5,
+                null,
+                null,
+                NotificationType.FRIEND_MESSAGE,
+                notification.getPostedOn(),
+                null
+        );
+        messagingTemplate.convertAndSendToUser(username, "queue/gotUnblocked", new BlockedUnblockedDTO(principalUsername, notificationDTO));
+        return messageDTO;
     }
 }

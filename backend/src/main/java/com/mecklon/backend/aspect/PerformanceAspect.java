@@ -14,7 +14,7 @@ public class PerformanceAspect {
         long before = System.currentTimeMillis();
         Object obj = jp.proceed();
         long after = System.currentTimeMillis();
-        System.out.println(jp.getSignature().getName()+" : "+(after-before));
+        //System.out.println(jp.getSignature().getName()+" : "+(after-before));
         return obj;
     }
 }

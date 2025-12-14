@@ -61,8 +61,9 @@ public class ChatService {
                                         media.getFileName(),
                                         media.getFileType()))
                         .toList(),
-                m.getUser().getUsername(),
-                null
+                m.getUser()!=null ? m.getUser().getUsername() : null,
+                null,
+                m.getUser()==null
         )).toList();
 
         int reached = c.getUser1().getUsername().equals(user1) ? c.getReached2() : c.getReached1();
@@ -132,7 +133,8 @@ public class ChatService {
                                         media.getFileType()))
                                         .toList() ,
                 mess.getUser()!=null? mess.getUser().getUsername():null,
-                null
+                null,
+                false
         );
 
         if(receiverUser.isOnline()){
@@ -287,7 +289,8 @@ public class ChatService {
                                                         )
                                                 ).toList(),
                                 message.getUser()!=null? message.getUser().getUsername():null,
-                                message.getUser()!=null? message.getUser().getProfileImg().getFileName():null
+                                message.getUser()!=null? message.getUser().getProfileImg().getFileName():null,
+                                false
                         )
                 ).toList();
 

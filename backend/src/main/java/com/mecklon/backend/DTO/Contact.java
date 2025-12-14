@@ -20,4 +20,5 @@ public class Contact {
     private String profileImgName;
     private boolean isOnline;
     private LocalDateTime lastSeen;
+    private String blocked;
 }

@@ -185,4 +185,31 @@ public class ConnectionsController {
     }
 
 
+    @PostMapping("/blockUser/{username}")
+    public ResponseEntity<MessageDTO> block(@PathVariable("username") String username, @AuthenticationPrincipal UserPrincipal principal){
+        try{
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(us.blockConnections(username,principal.getId(), principal.getUsername()));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @PostMapping("/unblockUser/{username}")
+    public ResponseEntity<MessageDTO> unBlock(@PathVariable("username") String username, @AuthenticationPrincipal UserPrincipal principal){
+        try{
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(us.unblockConnection(username,principal.getId(), principal.getUsername()));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }

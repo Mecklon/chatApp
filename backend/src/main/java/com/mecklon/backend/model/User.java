@@ -49,6 +49,8 @@ public class User {
 
     private String caption;
 
+
+
     private String preference;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

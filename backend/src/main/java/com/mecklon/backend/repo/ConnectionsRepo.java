@@ -30,7 +30,8 @@ public interface ConnectionsRepo extends JpaRepository<Connection, ConnectionKey
         mu.username,
         c.user1.profileImg.fileName,
         c.user1.isOnline,
-        c.user1.lastSeen
+        c.user1.lastSeen,
+        c.blocked
     )
     from Connection c
     left join c.latest m
@@ -51,7 +52,8 @@ public interface ConnectionsRepo extends JpaRepository<Connection, ConnectionKey
                         mu.username,
                         c.user2.profileImg.fileName,
                         c.user2.isOnline,
-                        c.user2.lastSeen
+                        c.user2.lastSeen,
+                        c.blocked
                     )
                     from Connection c
                     left join c.latest m

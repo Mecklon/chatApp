@@ -19,4 +19,5 @@ public class MessageDTO {
     private List<MultimediaDTO> media;
     private String username;
     private String profileImgName;
+    private boolean fromSystem;
 }
