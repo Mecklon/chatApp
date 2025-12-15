@@ -20,16 +20,16 @@ export const sendMessage = createAsyncThunk(
 
 export const getMessages = createAsyncThunk(
   "chat/getMessage",
-  async ({ username1, username2, cursor }) => {
-    const res = await api.post("/getChats", { username1, username2, cursor });
+  async ({ username1, username2, cursor, firstPage }) => {
+    const res = await api.post("/getChats/"+firstPage, { username1, username2, cursor });
     return res.data;
   }
 );
 
 export const getGroupMessages = createAsyncThunk(
   "chat/getGroupMessages",
-  async ({ id, cursor }) => {
-    const res = await api.post("/getGroupMessages", { id, cursor });
+  async ({ id, cursor,firstPage }) => {
+    const res = await api.post("/getGroupMessages/"+firstPage, { id, cursor });
     return res.data;
   }
 );
@@ -118,6 +118,7 @@ const initialState = {
   gettingMessageError: null,
   typing: false,
   hasMore: true,
+  changeIndicator:false
 };
 
 let timeOut = null;
@@ -133,6 +134,8 @@ const chatSlice = createSlice({
       state.grpInfo = null;
       state.isPrivate = true;
       state.typing = false;
+      state.hasMore = true;
+      state.changeIndicator = !state.changeIndicator
     },
     addMessage: (state, action) => {
       state.chats.push(action.payload);
@@ -166,6 +169,9 @@ const chatSlice = createSlice({
       state.grpInfo = action.payload;
       state.isPrivate = false;
       state.typing = false;
+      state.hasMore = true;
+      state.changeIndicator = !state.changeIndicator
+
     },
     addGroupMessage: (state, action) => {
       state.chats.push({ id: nanoid(), ...action.payload.message });

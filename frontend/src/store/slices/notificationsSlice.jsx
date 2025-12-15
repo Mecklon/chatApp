@@ -4,8 +4,8 @@ import { SiTaketwointeractivesoftware } from "react-icons/si";
 
 export const getNotifications = createAsyncThunk(
   "notifications/getNotifications",
-  async (cursor) => {
-    const res = await api.get("/getNotifications/" + cursor);
+  async ({cursor,isFirst}) => {
+    const res = await api.get("/getNotifications/" + cursor+"/"+isFirst);
     return res.data;
   }
 );

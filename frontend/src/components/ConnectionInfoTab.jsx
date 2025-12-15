@@ -27,7 +27,7 @@ function ConnectionInfoTab() {
 
   const [caption, setCaption] = useState(null);
 
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded2] = useState(false);
 
   const [visualMedia, setVisualMedia] = useState([]);
   const [documentMedia, setDocumentMedia] = useState([]);
@@ -65,13 +65,13 @@ function ConnectionInfoTab() {
     >
       <RxCross1
         className="absolute right-3 cursor-pointer text-text duration-300 hover:scale-125"
-        onClick={() => dispatch(setExpanded(false))}
+        onClick={() => {console.log("alsfja;");dispatch(setExpanded(false))}}
       />
 
       {userInfo.blocked != username && !userInfo.blocked && (
         <div
           className="absolute left-1 flex gap-1/2 items-center text-rose-600 p-1 px-2 duration-300 hover:bg-bg-light cursor-pointer top-1 rounded-sm"
-          onClick={() => setExpanded(true)}
+          onClick={() => setExpanded2(true)}
         >
           <MdBlock className="text-xl" />
           block
@@ -79,7 +79,7 @@ function ConnectionInfoTab() {
       )}
       {expanded && userInfo.blocked != username && !userInfo.blocked && (
         <ConfirmationBox
-          setExpanded={setExpanded}
+          setExpanded={setExpanded2}
           handleYes={async () => {
             const message = await postFetch("blockUser/" + userInfo.name);
             dispatch(addMessage(message));
@@ -93,7 +93,7 @@ function ConnectionInfoTab() {
       {userInfo.blocked != username && userInfo.blocked && (
         <div
           className="absolute left-1 flex gap-1/2 items-center text-green-600 p-1 px-2 duration-300 hover:bg-bg-light cursor-pointer top-1 rounded-sm"
-          onClick={()=>setExpanded(true)}
+          onClick={()=>setExpanded2(true)}
         >
           <CgUnblock className="text-xl" />
           unblock
@@ -102,7 +102,7 @@ function ConnectionInfoTab() {
 
       {expanded && userInfo.blocked != username && userInfo.blocked && (
         <ConfirmationBox
-          setExpanded={setExpanded}
+          setExpanded={setExpanded2}
           handleYes={async () => {
             const message = await postFetch("unblockUser/" + userInfo.name);
             dispatch(addMessage(message));

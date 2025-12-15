@@ -13,17 +13,22 @@ function Messages() {
   const chatRef = useRef();
 
   const bottomScrollLength = useRef(0);
+
+
   const maintainScroll = () => {
     chatRef.current.scrollTop =
       chatRef.current.scrollHeight -
       chatRef.current.offsetHeight -
-      bottomScrollLength.current -
-      1;
+      bottomScrollLength.current;
   };
 
   useEffect(() => {
     maintainScroll();
   }, [chatInfo.chats]);
+
+  useEffect(()=>{
+    bottomScrollLength.current =0
+  },[chatInfo.changeIndicator])
 
   const endRef = useRef(null);
 
@@ -37,6 +42,7 @@ function Messages() {
           username1: username,
           username2: chatInfo.userInfo.name,
           cursor: cursor.toISOString().slice(0, 23),
+          firstPage:true
         })
       );
     } else {
@@ -44,6 +50,7 @@ function Messages() {
         getGroupMessages({
           id: chatInfo.grpInfo.id,
           cursor: cursor.toISOString().slice(0, 23),
+          firstPage:true
         })
       );
     }
@@ -66,6 +73,7 @@ function Messages() {
             username1: username,
             username2: chatInfo.userInfo.name,
             cursor: chatInfo.chats[0].time,
+            firstPage: false
           })
         );
       } else {
@@ -73,6 +81,7 @@ function Messages() {
           getGroupMessages({
             id: chatInfo.grpInfo.id,
             cursor: chatInfo.chats[0].time,
+            firsPage:false
           })
         );
       }

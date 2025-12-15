@@ -35,7 +35,10 @@ const Notifications = forwardRef(({ state }, ref) => {
       )
         return;
       dispatch(
-        getNotifications(notifications[notifications.length - 1].postedOn)
+        getNotifications({
+          cursor: notifications[notifications.length - 1].postedOn,
+          isFirst: false,
+        })
       );
     });
 

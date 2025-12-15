@@ -18,7 +18,12 @@ function Home() {
     dispatch(getConnections());
     dispatch(getGroups());
     dispatch(getRequests(tomorrow.toISOString().slice(0, 23)));
-    dispatch(getNotifications(tomorrow.toISOString().slice(0, 23)));
+    dispatch(
+      getNotifications({
+        cursor: tomorrow.toISOString().slice(0, 23),
+        isFirst: true,
+      })
+    );
     fetch("/receivedMessages");
   }, []);
 

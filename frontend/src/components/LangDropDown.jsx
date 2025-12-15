@@ -274,6 +274,7 @@ const LangDropDown = forwardRef(({ setCurrentLang, setExpanded }, ref) => {
   return (
     <div className="absolute top-full border-border border rounded-xl overflow-clip">
       <input
+        autoFocus
         type="text"
         onChange={handleType}
         className="bg-bg-light outline-0 p-1 px-2"
