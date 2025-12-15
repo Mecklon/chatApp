@@ -22,11 +22,12 @@ public class NotificationsController {
     @Autowired
     private NotificationService ns;
 
-    @GetMapping("/getNotifications/{cursor}")
-    ResponseEntity<List<NotificationDTO>> getNotifications(@PathVariable("cursor")LocalDateTime cursor, @AuthenticationPrincipal UserPrincipal principal){
+    @GetMapping("/getNotifications/{cursor}/{firstPage}")
+    ResponseEntity<List<NotificationDTO>> getNotifications(@PathVariable("cursor")LocalDateTime cursor, @AuthenticationPrincipal UserPrincipal principal,@PathVariable("firstPage") Boolean isFirst){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(ns.getNotifications(cursor, principal.getId()));
+            return ResponseEntity.status(HttpStatus.OK).body(ns.getNotifications(cursor, principal.getId(),isFirst));
         } catch (Exception e) {
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

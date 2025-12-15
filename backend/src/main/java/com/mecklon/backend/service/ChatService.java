@@ -6,6 +6,7 @@ import com.mecklon.backend.repo.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -43,7 +44,13 @@ public class ChatService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    public ChatContextDTO getMessage(String user1, String user2, LocalDateTime time){
+
+    @Cacheable(
+    value = "chatPages",
+    key = "T(java.util.Arrays).asList(#user1, #user2).stream().sorted().collect(T(java.util.stream.Collectors).joining(':')) + ':' + #time.toString()",
+    unless = "#firstPage"
+    )
+    public ChatContextDTO getMessage(String user1, String user2, LocalDateTime time, boolean firstPage){
         Connection c = Crepo.getConnection(user1, user2);
 
         Pageable page = PageRequest.of(0, 20);
@@ -269,11 +276,16 @@ public class ChatService {
         return response;
     }
 
-    public ChatContextDTO getGroupMessages(long id, LocalDateTime cursor) {
+    @Cacheable(
+            value = "chatPages",
+            key = "#id + ':' + #cursor",
+            unless = "#firstPage"
+    )
+    public ChatContextDTO getGroupMessages(long id, LocalDateTime cursor, boolean firstPage) {
 
-        System.out.println(id);
         Group g = Grepo.findById(id).orElseThrow();
         List<Message> messages = Mrepo.getGroupMessages(id, cursor,PageRequest.of(0,20));
+
 
         List<MessageDTO> messageDTOS = messages.stream()
                 .map(message->

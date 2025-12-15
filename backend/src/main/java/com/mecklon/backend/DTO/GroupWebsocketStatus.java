@@ -1,4 +1,4 @@
-package com.mecklon.backend.model;
+package com.mecklon.backend.DTO;
 
 public enum GroupWebsocketStatus {
     MESSAGE,

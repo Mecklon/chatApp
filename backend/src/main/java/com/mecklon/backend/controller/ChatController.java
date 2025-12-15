@@ -2,10 +2,8 @@ package com.mecklon.backend.controller;
 
 
 import com.mecklon.backend.DTO.*;
-import com.mecklon.backend.model.GroupWebsocketDTO;
 import com.mecklon.backend.model.UserPrincipal;
 import com.mecklon.backend.service.ChatService;
-import org.apache.catalina.util.ToStringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -29,20 +26,11 @@ public class ChatController {
 
 
 
-    @PostMapping("/getChats")
-    public ResponseEntity<ChatContextDTO> getMessages(@RequestBody MessageFetchRequest req){
+    @PostMapping("/getChats/{firstPage}")
+    public ResponseEntity<ChatContextDTO> getMessages(@RequestBody MessageFetchRequest req, @PathVariable("firstPage") boolean firstPage){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(cs.getMessage(req.getUsername1(),req.getUsername2(), req.getCursor()));
+            return ResponseEntity.status(HttpStatus.OK).body(cs.getMessage(req.getUsername1(),req.getUsername2(), req.getCursor(), firstPage));
         } catch (Exception e) {
-
-            System.out.println(e.getMessage());
-            System.out.println(e.getMessage());
-            System.out.println(e.getMessage());
-            System.out.println(e.getMessage());
-            System.out.println(e.getMessage());
-            System.out.println(e.getMessage());
-            System.out.println(e.getMessage());
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -50,7 +38,6 @@ public class ChatController {
     @PostMapping("/sendMessage")
     public ResponseEntity<MessageDTO> sendMessage(@RequestParam(value = "text", required = false) String content, @RequestParam(value="files", required = false) List<MultipartFile> files,@RequestParam("receiver") String receiver, Authentication auth) throws IOException {
         MessageDTO res = cs.saveMessage(content, files, receiver,auth.getName());
-        System.out.println(receiver);
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
@@ -95,10 +82,10 @@ public class ChatController {
         }
     }
 
-    @PostMapping("/getGroupMessages")
-    public ResponseEntity<ChatContextDTO> getGroupMessages(@RequestBody GroupMessageFetchRequest req){
+    @PostMapping("/getGroupMessages/{firstPage}")
+    public ResponseEntity<ChatContextDTO> getGroupMessages(@RequestBody GroupMessageFetchRequest req,@PathVariable("firstPage") boolean firstPage){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(cs.getGroupMessages(req.getId(), req.getCursor()));
+            return ResponseEntity.status(HttpStatus.OK).body(cs.getGroupMessages(req.getId(), req.getCursor(), firstPage));
         }catch (Exception e){
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

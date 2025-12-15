@@ -1,6 +1,5 @@
-package com.mecklon.backend.model;
+package com.mecklon.backend.DTO;
 
-import com.mecklon.backend.DTO.GroupMessageDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

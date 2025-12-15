@@ -202,8 +202,6 @@ public class ConnectionsController {
     @PostMapping("/unblockUser/{username}")
     public ResponseEntity<MessageDTO> unBlock(@PathVariable("username") String username, @AuthenticationPrincipal UserPrincipal principal){
         try{
-
-
             return ResponseEntity.status(HttpStatus.OK).body(us.unblockConnection(username,principal.getId(), principal.getUsername()));
         } catch (Exception e) {
             System.out.println(e.getMessage());
