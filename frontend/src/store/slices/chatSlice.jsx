@@ -21,6 +21,7 @@ export const sendMessage = createAsyncThunk(
 export const getMessages = createAsyncThunk(
   "chat/getMessage",
   async ({ username1, username2, cursor, firstPage }) => {
+    
     const res = await api.post("/getChats/"+firstPage, { username1, username2, cursor });
     return res.data;
   }

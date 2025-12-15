@@ -46,7 +46,7 @@ public class AuthController {
         if(user.getProfileImg()!=null){
             map.put("profile", user.getProfileImg().getFileName());
         }
-        
+
         map.put("unseenNotifications", Integer.toString(user.getUnseenNotifications()));
         map.put("unseenRequests", Integer.toString(user.getUnseenRequest()));
         map.put("caption",user.getCaption());

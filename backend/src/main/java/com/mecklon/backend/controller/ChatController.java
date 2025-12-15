@@ -31,6 +31,7 @@ public class ChatController {
         try{
             return ResponseEntity.status(HttpStatus.OK).body(cs.getMessage(req.getUsername1(),req.getUsername2(), req.getCursor(), firstPage));
         } catch (Exception e) {
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -87,6 +88,9 @@ public class ChatController {
         try{
             return ResponseEntity.status(HttpStatus.OK).body(cs.getGroupMessages(req.getId(), req.getCursor(), firstPage));
         }catch (Exception e){
+            System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

@@ -67,6 +67,7 @@ function Messages() {
         !chatInfo.hasMore
       )
         return;
+        
       if (chatInfo.isPrivate) {
         dispatch(
           getMessages({
@@ -81,7 +82,7 @@ function Messages() {
           getGroupMessages({
             id: chatInfo.grpInfo.id,
             cursor: chatInfo.chats[0].time,
-            firsPage:false
+            firstPage:false
           })
         );
       }
