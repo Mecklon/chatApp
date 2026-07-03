@@ -45,7 +45,7 @@ public class ChatControllerSocket {
 //    @MessageMapping("/chat.addUser")
 //    @SendTo("/topic/public")
 //    public ChatMessage addUser(ChatMessage message) {
-//        log.info("👤 User joined: {}", message.getSender());
+//        log.info(" User joined: {}", message.getSender());
 //        message.setContent(message.getSender() + " joined the chat");
 //        return message;
 //    }

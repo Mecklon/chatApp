@@ -36,7 +36,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://localhost:5173"); // your frontend origin
+                .setAllowedOrigins("http://localhost:5174"); // your frontend origin
     }
 
     @Override
@@ -53,7 +53,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     if (authHeader != null && authHeader.startsWith("Bearer ")) {
                         String jwt = authHeader.substring(7);
 
-                        // 🔑 Validate JWT and extract username
                         String username = jwtService.extractUserName(jwt);
                         if (jwtService.validateToken(jwt)) {
                             accessor.setUser(

@@ -4,13 +4,12 @@ import { Client } from "@stomp/stompjs";
 export function useWebSocket(token) {
   const client = useMemo(() => {
     return new Client({
-      // Native WebSocket URL
-      brokerURL: "ws://localhost:9090/ws", // your Spring Boot WS endpoint
+      brokerURL: "ws://localhost:9090/ws", 
       connectHeaders: {
-        Authorization: `Bearer ${token}`, // JWT
+        Authorization: `Bearer ${token}`, 
       },
-      /* debug: (str) => console.log(str), */   // show logs in console
-      reconnectDelay: 5000, // auto-reconnect after 5s
+   
+      reconnectDelay: 5000, 
     });
   }, [token]);
 
