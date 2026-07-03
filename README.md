@@ -358,6 +358,7 @@ Features include:
 * Offline status
 * Last seen timestamps
 * Presence synchronization through WebSockets
+* Typing indicators
 
 Connected users receive immediate presence updates without polling.
 
@@ -438,7 +439,6 @@ Building this project provided experience with:
 * Horizontal scaling
 * Redis Pub/Sub
 * Message reactions
-* Typing indicators
 * Push notifications
 * Message search
 * End-to-end encryption
